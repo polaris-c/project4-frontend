@@ -13,7 +13,7 @@
       <h3 class="title">系 统 登 陆</h3>
 
       <!-- 用户名输入 -->
-      <el-form-item prop="username">
+      <el-form-item prop="">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
@@ -94,7 +94,7 @@ export default {
         password: 'admin'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
