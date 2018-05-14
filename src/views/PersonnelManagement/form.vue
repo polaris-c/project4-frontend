@@ -15,8 +15,8 @@
           <!-- 表单左栏 -->
           <div>
 
-            <el-form-item label="人员编号" prop="userID">
-              <el-input v-model="peopleInfoForm.userID" clearable></el-input>
+            <el-form-item label="人员编号" prop="username">
+              <el-input v-model="peopleInfoForm.username" clearable></el-input>
             </el-form-item>
 
             <el-form-item label="人员姓名" prop="name">
@@ -43,8 +43,8 @@
 
             <el-form-item label="性别" prop="gender">
                 <el-radio-group v-model="peopleInfoForm.gender">
-                  <el-radio label="0">Woman</el-radio>
-                  <el-radio label="1">Man</el-radio>
+                  <el-radio label="male">男</el-radio>
+                  <el-radio label="female">女</el-radio>
                 </el-radio-group>
             </el-form-item>
 
@@ -54,8 +54,8 @@
 
             <el-form-item label="权限" prop="role">
                 <el-select v-model="peopleInfoForm.role" placeholder="请选择权限">
-                  <el-option v-if = "superPermission" label="管理员" value="admin"></el-option>
-                  <el-option label="用户" value="user"></el-option>
+                  <el-option v-if = "superPermission" label="管理员" value=2></el-option>
+                  <el-option label="用户" value=3></el-option>
                 </el-select>
             </el-form-item>
 
@@ -145,32 +145,37 @@ export default {
     }
 
     const validateRole = (rule, value, callback) => {
-      if (value === '1') {
-        if (this.roles.indexOf('superAdmin') === -1) {
-          callback(new Error('无权限设置此用户为管理员'))
-        } else {
-          callback(console.log('--- validateRole is OK - 注意：此用户将被设置为管理员'))
-        }
+      if (value === '') {
+        callback(new Error('请设置权限'))
       } else {
         callback(console.log('--- validateRole is OK'))
       }
+      // if (value === '1') {
+      //   if (this.roles.indexOf('superAdmin') === -1) {
+      //     callback(new Error('无权限设置此用户为管理员'))
+      //   } else {
+      //     callback(console.log('--- validateRole is OK - 注意：此用户将被设置为管理员'))
+      //   }
+      // } else {
+      //   callback(console.log('--- validateRole is OK'))
+      // }
     }
 
     return {
       superPermission: false,
       peopleInfoForm: {
-        userID: '',
+        username: '',
         name: '',
-        password: '',
-        checkPassword: '',
-        gender: '',
+        password: null,
+        checkPassword: null,
+        gender: null,
         phone: '',
-        role: 'user',
+        role: null,
         picUrl: null,
         note: ''
       },
       rules: {
-        userID: [
+        username: [
           { required: true, message: '请输入人员编号', trigger: 'blur' }
         ],
         name: [
@@ -186,6 +191,9 @@ export default {
         gender: [
           { required: true, message: '请选择性别', trigger: 'change' }
         ],
+        phone: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
         role: [
           { validator: validateRole, required: true, trigger: 'blur' }
         ]
@@ -194,8 +202,10 @@ export default {
   },
 
   mounted() {
-    if (this.roles.indexOf('superAdmin') >= 0) {
+
+    if (this.roles === 3) {
       this.superPermission = true
+      console.log('--- You are the superPermission!!!', this.roles)
     }
   },
 
@@ -214,7 +224,7 @@ export default {
     // },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        console.log('--- peopleInfoForm: ', this.peopleInfoForm)
+        console.log('--- submitForm peopleInfoForm: ', this.peopleInfoForm)
         if (valid) {
           addPeople(this.peopleInfoForm).then((res) => {
             console.log('submit! res: ', res)

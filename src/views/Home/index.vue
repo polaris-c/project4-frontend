@@ -8,16 +8,20 @@
     </div>
 
     <div class="dashboard-text">
-      name:{{name}}
+      username: {{ username }}
     </div>
 
     <div class="dashboard-text">
-      roles:
-        <span  
+      name: {{ name }}
+    </div>
+
+    <div class="dashboard-text">
+      roles: {{ roles }}
+        <!-- <span  
           v-for='role in roles' 
           :key='role'>
-          {{role}}
-        </span>
+          {{ role }}
+        </span> -->
     </div>
 
   </div>
@@ -30,6 +34,7 @@ export default {
   name: 'dashboard',
   computed: {
     ...mapGetters([
+      'username',
       'name',
       'roles',
       'avatar'

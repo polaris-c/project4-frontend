@@ -8,6 +8,7 @@ import { getToken } from '@/utils/auth' // 验权
 const whiteList = ['/login'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
+  console.log('====== Jump Start ======')
   console.log('*** Permission router.beforeEach to: ', to)
   console.log('*** Permission router.beforeEach from: ', from)
   NProgress.start()
@@ -19,19 +20,19 @@ router.beforeEach((to, from, next) => {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo') // 拉取用户信息
           .then(res => {
-            console.log('*** Permission router.beforeEach store.dispatch(GetInfo) then res: ', res)
-            const roles = res.data.roles
-            store.dispatch('generateRoutes', { roles })
+            console.log('*** Permission router.beforeEach store.dispatch(GetInfo) is OK then res: ', res)
+            const role = res.data.role
+            store.dispatch('generateRoutes', { role })
               .then(() => {
                 router.addRoutes(store.getters.addRouters)
-                console.log('*** Permission router.beforeEach store.dispatch(generateRoutes)')
+                console.log('*** Permission router.beforeEach store.dispatch(generateRoutes) is OK \n====== LOGIN & GETINFO complete. ====== \n====== Prepare to redirection ======')
                 next({ ...to, replace: true })
               })
           })
           .catch(() => {
             store.dispatch('FedLogOut')
               .then(() => {
-                console.log('*** Permission router.beforeEach store.dispatch(FedLogOut)')
+                console.log('*** Permission router.beforeEach store.dispatch(FedLogOut) is OK')
                 Message.error('验证失败,请重新登录')
                 next({ path: '/login' })
               })
@@ -52,6 +53,6 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
-  console.log('*** Permission router.afterEach')
+  console.log('*** Permission router.afterEach is OK \n====== Jump Over ======')
   NProgress.done() // 结束Progress
 })

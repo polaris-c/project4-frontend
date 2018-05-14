@@ -18,16 +18,18 @@ const permission = {
   actions: {
     generateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data
+        console.log('*** store/permission generateRoutes data: ', data)
+        // const { roles } = data
         let accessedRouters
         /**
          * roles中有admin则加载全部asyncRouterMap
          * 否则调用filterAsyncRouter一个个解析roles里的元素
          */
-        if (roles.indexOf('superAdmin') >= 0) {
+        // if (roles.indexOf(3) >= 0) {
+        if(data.role === 3) {
           accessedRouters = asyncRouterMap
         } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+          accessedRouters = filterAsyncRouter(asyncRouterMap, role)
         }
         commit('SET_ROUTERS', accessedRouters)
         console.log('*** store/permission generateRoutes is OK, accessedRouters: ', accessedRouters)

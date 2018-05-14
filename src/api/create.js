@@ -2,7 +2,7 @@ import service from '@/utils/request'
 
 export function addPeople(data) {
   return service({
-    url: '/create/addPeople',
+    url: '/users/',
     method: 'post',
     data,
   })

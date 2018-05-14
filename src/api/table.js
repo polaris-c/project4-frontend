@@ -1,12 +1,5 @@
 import service from '@/utils/request'
 
-export function getPeopleList(params) {
-  return service({
-    url: '/table/peoplelist',
-    method: 'get',
-    params
-  })
-}
 
 export function getDataList(params) {
   return service({
@@ -40,12 +33,35 @@ export function getDevCompMatch(params) {
   })
 }
 
-export function updatePeople(data) {
+export function getPeopleList(params) {
+  return service({
+    url: '/users/',
+    method: 'get',
+    params
+  })
+}
+
+export function showPeople(username) {
+  return service({
+    url: '/users/' + username + '/',
+    method: 'get',
+  })
+}
+
+export function updatePeople(username, data) {
+  console.log('--- api updatePeople username: ', username)
   console.log('--- api updatePeople data: ', data)
   return service({
-    url: '/table/propleListUpdate',
-    method: 'post',
+    url: '/users/' + username + '/',
+    method: 'put',
     data
+  })
+}
+
+export function deletePeople(username) {
+  return service({
+    url: '/users/' + username + '/',
+    method: 'delete',
   })
 }
 

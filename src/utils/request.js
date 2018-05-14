@@ -12,8 +12,9 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request
   .use(config => {
+    console.log('====== Axios interceptors start ======')
     if (store.getters.token) {
-      config.headers['X-Token'] = getToken() // 让每个请求携带自定义token
+      config.headers['Authorization'] = 'JWT ' + getToken() // 让每个请求携带自定义token
     }
     console.log('*** utils/request service.interceptors.request config: ', config)
     return config
@@ -54,7 +55,8 @@ service.interceptors.response
     //   return Promise.reject('error')
     // } else {
       console.log('*** utils/request service.interceptors.response response: ', response)
-      return response.data
+      console.log('====== Axios interceptors Over ======')
+      return response
     // }
   },
   error => {

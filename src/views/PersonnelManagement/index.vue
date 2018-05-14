@@ -68,7 +68,7 @@
         fixed="left"
         width="100">
         <template slot-scope="scope">
-          {{scope.row.userID}}
+          {{scope.row.username}}
         </template>
       </el-table-column>
 
@@ -87,8 +87,8 @@
         width="100">
         <template slot-scope="scope">
           <el-tag 
-            :type="scope.row.gender == '0' ? 'success' : ''">
-            <span>{{scope.row.gender == "0" ? "Woman" : "Man"}}</span>
+            :type="scope.row.gender == 'female' ? 'success' : ''">
+            <span>{{scope.row.gender}}</span>
           </el-tag>
         </template>
       </el-table-column>
@@ -116,9 +116,9 @@
         width="150" >
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.isDelete === 0 ? 'success' : 'danger'"
+            :type="scope.row.isDelete === false ? 'success' : 'danger'"
             close-transition>
-            {{scope.row.isDelete === 0 ? "inservice " : "Dimission"}}
+            {{scope.row.isDelete === false ? "inservice " : "Dimission"}}
           </el-tag>
         </template>
       </el-table-column>
@@ -131,7 +131,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="dialogShowVisible = true">
+            @click="handleDetail(scope.$index, scope.row)">
             <!-- @click="handleEdit(scope.$index, scope.row)" -->
             详 细
           </el-button>
@@ -169,6 +169,8 @@
     <!-- 弹出框 详细展示 -->
     <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
 
+      {{ showPeopleInfo }}
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleDownload()">导出</el-button>
         <el-button type="" @click="dialogShowVisible = false">返回</el-button>
@@ -180,10 +182,11 @@
 
       <el-form 
         :model="peopleInfoForm" 
-        :rules="rules" 
+        :rules="rules"
         ref="peopleInfoComponent" 
         label-width="100px" 
         class="">
+        <!-- :rules="rules" -->
 
         <el-form-item label="照片上传" prop="picUrl">
           <el-upload 
@@ -199,8 +202,8 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="人员编号" prop="userID">
-          <el-input v-model="peopleInfoForm.userID" clearable></el-input>
+        <el-form-item label="人员编号" prop="username">
+          <el-input v-model="peopleInfoForm.username" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="人员姓名" prop="name">
@@ -227,8 +230,8 @@
 
         <el-form-item label="性别" prop="gender">
           <el-radio-group v-model="peopleInfoForm.gender">
-            <el-radio label="0">Woman</el-radio>
-            <el-radio label="1">Man</el-radio>
+            <el-radio label="male">男</el-radio>
+            <el-radio label="female">女</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -238,8 +241,8 @@
 
         <el-form-item label="权限" prop="role">
           <el-select v-model="peopleInfoForm.role" placeholder="请选择权限">
-            <el-option v-if = "superPermission" label="管理员" value="admin"></el-option>
-            <el-option label="用户" value="user"></el-option>
+            <el-option v-if = "superPermission" label="管理员" value=2></el-option>
+            <el-option label="用户" value=3></el-option>
           </el-select>
         </el-form-item>
 
@@ -260,7 +263,7 @@
 </template>
 
 <script>
-import { getPeopleList, updatePeople } from '@/api/table'
+import { getPeopleList, showPeople, updatePeople, deletePeople } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -291,14 +294,10 @@ export default {
     }
 
     const validateRole = (rule, value, callback) => {
-      if (value === '1') {
-        if (this.roles.indexOf('superAdmin') === -1) {
-          callback(new Error('无权限设置此用户为管理员'))
-        } else {
-          callback(console.log('--- validateRole is OK - 注意：此用户将被设置为管理员'))
-        }
+      if (value === '') {
+        callback(new Error('请设置权限'))
       } else {
-        callback(console.log('--- validateRole is OK'))
+          callback(console.log('--- validateRole is OK'))
       }
     }
 
@@ -316,25 +315,29 @@ export default {
 
       superPermission: false,
 
+      editUsername: null,
+
+      showPeopleInfo: {},
+
       peopleInfoForm: {
-        id: undefined,
-        userID: '',
+        // id: undefined,
+        username: '',
         name: '',
         password: '',
         checkPassword: '',
         gender: '',
         phone: '',
-        role: 'user',
+        role: null,
         picUrl: null,
         note: ''
       },
       rules: {
-        userID: [
+        username: [
           { required: true, message: '请输入人员编号', trigger: 'blur' }
         ],
         name: [
           { required: true, message: '请输入人员姓名', trigger: 'blur' },
-          { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' }
+          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
         ],
         password: [
           { validator: validatePassword, required: true, trigger: 'blur' }
@@ -344,6 +347,9 @@ export default {
         ],
         gender: [
           { required: true, message: '请选择性别', trigger: 'change' }
+        ],
+        phone: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
         ],
         role: [
           { validator: validateRole, required: true, trigger: 'blur' }
@@ -359,17 +365,6 @@ export default {
     ])
   },
 
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-
   created() {
     this.fetchData()
     console.log('--- created fetchData')
@@ -380,17 +375,21 @@ export default {
   mounted() {
     // this.handleCurrentChange(1)
     // console.log('--- mounted handleCurrentChange')
+    if (this.roles === 3) {
+      this.superPermission = true
+      console.log('--- You are the superPermission!!!', this.roles)
+    }
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
       getPeopleList().then(response => {
-        this.list = response.data.items
+        this.list = response.data
         this.listLength = this.list.length
         this.listLoading = false
         console.log('--- PersonnelManagement fetchData List: ', this.list.length)
-        this.handleCurrentChange(1)
+        this.handleCurrentChange(this.currentPage)
       })
     },
 
@@ -406,28 +405,42 @@ export default {
       alert('已导出！')
     },
 
+    handleDetail(index, row) {
+      showPeople(row.username).then(res => {
+        this.showPeopleInfo = res.data
+      })
+      this.dialogShowVisible = true
+    },
+
     handleEdit(index, row) {
       console.log('--- Edit: ', index, row)
       this.dialogFormVisible = true
       this.peopleInfoForm = Object.assign({}, row)
+      this.editUsername = row.username
     },
 
     updateEdit() {
       this.$refs['peopleInfoComponent'].validate((valid) => {
         if(valid) {
           const tempData = Object.assign({}, this.peopleInfoForm)
-          updatePeople(tempData).then(() => {
-            for(const v of this.list)
-            {
-              if(v.id === tempData.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, tempData)
-                this.handleCurrentChange(this.currentPage)
-                break
-              }
-            }
+          updatePeople(this.editUsername, tempData).then((res) => {
+            // for(const v of this.list)
+            // {
+            //   if(v.id === tempData.id) {
+            //     const index = this.list.indexOf(v)
+            //     this.list.splice(index, 1, tempData)
+            //     this.handleCurrentChange(this.currentPage)
+            //     break
+            //   }
+            // }
+            console.log('--- updateEdit! res: ', res)
+            this.fetchData()
+            this.dialogFormVisible = false
           })
-          this.dialogFormVisible = false
+          .catch(error => {
+            console.log('*** updateEdit! error: ', error)
+          })
+          
         }
         
       })
@@ -435,9 +448,17 @@ export default {
 
     handleDelete(index, row) {
       console.log('--- Deleted: ', index, row, this.roles)
-      if (this.roles.indexOf('superAdmin') >= 0) {
+      deletePeople(row.username).then((res) => {
+        console.log('--- Deleted! res: ', res)
+        this.fetchData()
+      })
+      .catch(error => {
+        console.log('--- Deleted! error: ', error)
+      })
+
+      if (this.roles === 3) {
         alert('--- superAdmin权限 允许删除 ---')
-      } else if (this.roles.indexOf('admin') >= 0) {
+      } else if (this.roles === 2) {
         alert('--- admin权限  可删除user ---')
       } else {
         alert('--- 无删除权限 ---')
