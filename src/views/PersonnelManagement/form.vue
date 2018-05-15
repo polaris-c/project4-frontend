@@ -85,12 +85,13 @@
             <el-form-item prop="picUrl">
               <el-upload 
                 class=""
-                action="https://jsonplaceholder.typicode.com/posts/"
+                action="http://127.0.0.1:8000/users/"
+                :http-request="httprequest"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
-                >
-                <!-- :on-change="showAvatar" -->
+                :on-change="handleAvatarChange"
+                drag>  
                 <img v-if="peopleInfoForm.picUrl" :src="peopleInfoForm.picUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
               </el-upload>
@@ -110,14 +111,19 @@
 <script>
 import { mapGetters } from 'vuex'
 import { addPeople } from '@/api/create'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'addPeople',
 
   computed: {
     ...mapGetters([
-      'roles'
-    ])
+      'roles',
+      'token'
+    ]),
+    // Authorization() {
+    //   return { Authorization: 'JWT ' + this.token } 
+    // } 
   },
 
   data() {
@@ -163,6 +169,7 @@ export default {
 
     return {
       superPermission: false,
+      uploadForm: {},
       peopleInfoForm: {
         username: '',
         name: '',
@@ -207,9 +214,18 @@ export default {
       this.superPermission = true
       console.log('--- You are the superPermission!!!', this.roles)
     }
+
+    // console.log('--- Authorization', this.Authorization)
   },
 
   methods: {
+    httprequest(content) {
+      this.peopleInfoForm.picUrl = content.file
+      console.log('--- upload: ', content.file)
+    },
+    handleAvatarChange(file, fileList) {
+      console.log('--- handleAvatarChange', file)
+    },
     handleAvatarSuccess(res, file) {
       console.log('--- handleAvatarSuccess', res, file)
     },
@@ -218,20 +234,33 @@ export default {
       window.URL = window.URL || window.webkitURL
       this.peopleInfoForm.picUrl = window.URL.createObjectURL(file)
       console.log('--- this.picUrl: ', this.peopleInfoForm.picUrl)
+
+      this.uploadForm = new FormData();
+      this.uploadForm.append('picUrl', file, file.name);
+
+      return false;
     },
-    // showAvatar(file, fileList) {
-    //   console.log('--- showAvatar', file, fileList)
-    // },
+
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        console.log('--- submitForm peopleInfoForm: ', this.peopleInfoForm)
+
         if (valid) {
-          addPeople(this.peopleInfoForm).then((res) => {
+
+          this.uploadForm.append('username', this.peopleInfoForm.username)
+          this.uploadForm.append('name', this.peopleInfoForm.name)
+          this.uploadForm.append('password', this.peopleInfoForm.password)
+          this.uploadForm.append('gender', this.peopleInfoForm.gender)
+          this.uploadForm.append('phone', this.peopleInfoForm.phone)
+          this.uploadForm.append('role', this.peopleInfoForm.role)
+          this.uploadForm.append('note', this.peopleInfoForm.note)
+          console.log('--- submitForm uploadForm: ', this.uploadForm)
+
+          addPeople(this.uploadForm).then((res) => {
             console.log('submit! res: ', res)
             this.goBack()
           })
         } else {
-          console.log('error submit!')
+          console.log('++++ ++++ error submit! ++++ ++++')
           return false
         }
       })

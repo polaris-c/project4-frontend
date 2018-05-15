@@ -26,7 +26,7 @@
       </el-form-item>
 
       <!-- 密码输入 -->
-      <el-form-item prop="password">
+      <el-form-item prop="">
         <span class="svg-container">
           <svg-icon icon-class="password"></svg-icon>
         </span>
@@ -82,11 +82,11 @@ export default {
     }
     /* 密码验证 */
     const validatePass = (rule, value, callback) => {
-      if (value.length < 4) {
-        callback(new Error('密码不能小于4位'))
-      } else {
-        callback()
-      }
+      // if (value.length < 4) {
+      //   callback(new Error('密码不能小于4位'))
+      // } else {
+      //   callback()
+      // }
     }
     return {
       loginForm: {
@@ -95,7 +95,7 @@ export default {
       },
       loginRules: {
         // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePass }]
+        // password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
       pwdType: 'password'

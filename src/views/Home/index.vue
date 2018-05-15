@@ -3,7 +3,7 @@
   <div class="dashboard-container">
 
     <div class="avatar-wrapper">
-      <img class="user-avatar" src="file:///D:/Code/Git/FrontendForProject4/static/avatar.jpg">
+      <img class="user-avatar" :src="avatar">
         <!-- :src="avatar+'?imageView2/1/w/80/h/80'" -->
     </div>
 
@@ -51,6 +51,13 @@ export default {
   &-text {
     font-size: 30px;
     line-height: 46px;
+  }
+}
+
+.user {
+  &-avatar {
+    width: 300px;
+    height: 200px;
   }
 }
 </style>
