@@ -118,7 +118,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'roles',
+      'role',
       'token'
     ]),
     // Authorization() {
@@ -157,7 +157,7 @@ export default {
         callback(console.log('--- validateRole is OK'))
       }
       // if (value === '1') {
-      //   if (this.roles.indexOf('superAdmin') === -1) {
+      //   if (this.role.indexOf('superAdmin') === -1) {
       //     callback(new Error('无权限设置此用户为管理员'))
       //   } else {
       //     callback(console.log('--- validateRole is OK - 注意：此用户将被设置为管理员'))
@@ -210,9 +210,9 @@ export default {
 
   mounted() {
 
-    if (this.roles === 3) {
+    if (this.role === 3) {
       this.superPermission = true
-      console.log('--- You are the superPermission!!!', this.roles)
+      console.log('--- You are the superPermission!!!', this.role)
     }
 
     // console.log('--- Authorization', this.Authorization)

@@ -57,8 +57,8 @@
       </el-form-item>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: admin</span>
+        <span style="margin-right:20px;">Username: bzxt</span>
+        <span> Password: bzxt1234</span>
       </div>
 
     </el-form>
@@ -82,16 +82,16 @@ export default {
     }
     /* 密码验证 */
     const validatePass = (rule, value, callback) => {
-      // if (value.length < 4) {
-      //   callback(new Error('密码不能小于4位'))
-      // } else {
-      //   callback()
-      // }
+      if (value.length < 4) {
+        callback(new Error('密码不能小于4位'))
+      } else {
+        callback()
+      }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: 'bzxt',
+        password: 'bzxt1234'
       },
       loginRules: {
         // username: [{ required: true, trigger: 'blur', validator: validateUsername }],

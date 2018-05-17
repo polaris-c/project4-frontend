@@ -337,7 +337,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'roles'
+      'role'
     ])
   },
 
@@ -419,13 +419,7 @@ export default {
 
     handleDelete(index, row) {
       console.log('--- Deleted: ', index, row, this.roles)
-      if (this.roles.indexOf('superAdmin') >= 0) {
-        alert('--- superAdmin权限 允许删除 ---')
-      } else if (this.roles.indexOf('admin') >= 0) {
-        alert('--- admin权限  允许删除 ---')
-      } else {
-        alert('--- 无删除权限 ---')
-      }
+
     },
 
     handleDownload() {

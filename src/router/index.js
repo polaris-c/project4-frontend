@@ -19,7 +19,7 @@ import Layout from '../views/layout/Layout'
 * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
 * name:'router-name'             the name is used by <keep-alive> (must set!!!)
 * meta : {
-    roles: ['admin','editor']     will control the page roles (you can set multiple roles)
+    roles: [1,2,3]               will control the page roles (1:superAdmin; 2:admin; 3:user)
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar,
   }
@@ -72,7 +72,7 @@ export const asyncRouterMap = [
     path: '/PersonnelManagement',
     component: Layout,
     redirect: '/PersonnelManagement/index',
-    meta: { roles: ['superAdmin', 'admin'] },
+    meta: { roles: [1, 2] },
     children: [
       {
         path: 'index',
@@ -81,7 +81,7 @@ export const asyncRouterMap = [
         meta: {
           title: '人员管理',
           icon: 'peoples',
-          roles: ['superAdmin', 'admin']
+          roles: [1, 2]
         }
       }
     ]
@@ -90,7 +90,7 @@ export const asyncRouterMap = [
   {
     path: '/PersonnelManagement',
     component: Layout,
-    meta: { roles: ['superAdmin', 'admin'] },
+    meta: { roles: [1, 2] },
     hidden: true,
     children: [
       {
@@ -99,7 +99,7 @@ export const asyncRouterMap = [
         component: _import('PersonnelManagement/form'),
         meta: {
           title: '增加人员',
-          roles: ['superAdmin', 'admin']
+          roles: [1, 2]
         }
       }
     ]
@@ -150,7 +150,7 @@ export const asyncRouterMap = [
   {
     path: '/CommonSamples',
     component: Layout,
-    meta: { roles: ['superAdmin', 'admin'] },
+    meta: { roles: [1, 2] },
     hidden: true,
     children: [
       {
@@ -159,7 +159,7 @@ export const asyncRouterMap = [
         component: _import('CommonSamples/addExplosive'),
         meta: {
           title: '增加常见炸药与原材料样本',
-          roles: ['superAdmin', 'admin']
+          roles: [1, 2]
         }
       },
       {
@@ -168,7 +168,7 @@ export const asyncRouterMap = [
         component: _import('CommonSamples/addDeviceIngredient'),
         meta: {
           title: '增加常见爆炸装置成分样本',
-          roles: ['superAdmin', 'admin']
+          roles: [1, 2]
         }
       },
       {
@@ -177,7 +177,7 @@ export const asyncRouterMap = [
         component: _import('CommonSamples/addDeviceShape'),
         meta: {
           title: '增加常见爆炸装置形态样本',
-          roles: ['superAdmin', 'admin']
+          roles: [1, 2]
         }
       },
       {
@@ -186,7 +186,7 @@ export const asyncRouterMap = [
         component: _import('CommonSamples/deviceShapeOperation'),
         meta: {
           title: '常见爆炸装置形态图像处理',
-          roles: ['superAdmin', 'admin']
+          roles: [1, 2]
         }
       }
     ]
@@ -241,7 +241,7 @@ export const asyncRouterMap = [
     path: '/CaseSamples',
     component: Layout,
     hidden: true,
-    meta: { title: '案件物证', roles: ['superAdmin', 'admin', 'user'] },
+    meta: { title: '案件物证', roles: [1, 2, 3] },
     children: [
       {
         path: 'addExplosive',
@@ -249,7 +249,7 @@ export const asyncRouterMap = [
         component: _import('CaseSamples/addExplosive'),
         meta: {
           title: '增加案件物证炸药与原材料样本',
-          roles: ['superAdmin', 'admin', 'user'] }
+          roles: [1, 2, 3] }
       },
       {
         path: 'addDeviceIngredient',
@@ -257,7 +257,7 @@ export const asyncRouterMap = [
         component: _import('CaseSamples/addDeviceIngredient'),
         meta: {
           title: '增加案件物证爆炸装置成分样本',
-          roles: ['superAdmin', 'admin', 'user'] }
+          roles: [1, 2, 3] }
       },
       {
         path: 'addDeviceShape',
@@ -265,7 +265,7 @@ export const asyncRouterMap = [
         component: _import('CaseSamples/addDeviceShape'),
         meta: {
           title: '增加案件物证爆炸装置形态样本',
-          roles: ['superAdmin', 'admin', 'user'] }
+          roles: [1, 2, 3] }
       }
     ]
   },
@@ -320,7 +320,7 @@ export const asyncRouterMap = [
     path: '/AnalysisAndJudgment',
     component: Layout,
     hidden: true,
-    meta: { title: '分析研判', roles: ['superAdmin', 'admin', 'user'] },
+    meta: { title: '分析研判' },
     children: [
       {
         path: 'explosiveAnalysis',

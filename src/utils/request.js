@@ -12,7 +12,7 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request
   .use(config => {
-    console.log('====== Axios interceptors start ======')
+    console.log('[[[[[[[[ Axios interceptors start ======')
     if (store.getters.token) {
       config.headers['Authorization'] = 'JWT ' + getToken() // 让每个请求携带自定义token
     }
@@ -21,7 +21,7 @@ service.interceptors.request
   },
   error => {
   // Do something with request error
-    console.log('*** utils/request service.interceptors.request error: ',error) // for debug
+    console.log('++++ ++++ utils/request service.interceptors.request error ++++ ++++ ',error) // for debug
     Promise.reject(error)
   }
   )
@@ -55,12 +55,12 @@ service.interceptors.response
     //   return Promise.reject('error')
     // } else {
       console.log('*** utils/request service.interceptors.response response: ', response)
-      console.log('====== Axios interceptors Over ======')
+      console.log('====== Axios interceptors Over ]]]]]]]]')
       return response
     // }
   },
   error => {
-    console.log('*** utils/request service.interceptors.response err:' + error)// for debug
+    console.log('++++ ++++ utils/request service.interceptors.response err ++++ ++++ ' + error)// for debug
     Message({
       message: error.message,
       type: 'error',

@@ -5,7 +5,7 @@ const getters = {
   avatar: state => state.user.avatar,
   username: state => state.user.username,
   name: state => state.user.name,
-  roles: state => state.user.roles,
+  role: state => state.user.role,
   
   addRouters: state => state.permission.addRouters,
   permissionRouters: state => state.permission.routers

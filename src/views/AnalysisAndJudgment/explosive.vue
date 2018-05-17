@@ -209,7 +209,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'roles'
+      'role'
     ])
   },
 
@@ -250,7 +250,7 @@ export default {
     },
 
     analysis(index, row) {
-      console.log('--- analysis: ', index, row, this.roles)
+      console.log('--- analysis: ', index, row, this.role)
       this.$router.push('/AnalysisAndJudgment/explosiveAnalysis')
     },
 

@@ -361,23 +361,19 @@ export default {
 
   computed: {
     ...mapGetters([
-      'roles'
+      'role'
     ])
   },
 
   created() {
     this.fetchData()
     console.log('--- created fetchData')
-    // console.log('--- PersonnelManagement this.$route: ', this.$route)
-    // console.log('--- PersonnelManagement this.$router: ', this.$router)
   },
 
   mounted() {
-    // this.handleCurrentChange(1)
-    // console.log('--- mounted handleCurrentChange')
-    if (this.roles === 3) {
+    if (this.role === 1) {
       this.superPermission = true
-      console.log('--- You are the superPermission!!!', this.roles)
+      console.log('--- You are the superPermission!!!', this.role)
     }
   },
 
@@ -447,7 +443,7 @@ export default {
     },
 
     handleDelete(index, row) {
-      console.log('--- Deleted: ', index, row, this.roles)
+      console.log('--- Deleted: ', index, row, this.role)
       deletePeople(row.username).then((res) => {
         console.log('--- Deleted! res: ', res)
         this.fetchData()
@@ -456,9 +452,9 @@ export default {
         console.log('--- Deleted! error: ', error)
       })
 
-      if (this.roles === 3) {
+      if (this.role === 1) {
         alert('--- superAdmin权限 允许删除 ---')
-      } else if (this.roles === 2) {
+      } else if (this.role === 2) {
         alert('--- admin权限  可删除user ---')
       } else {
         alert('--- 无删除权限 ---')
