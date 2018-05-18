@@ -419,7 +419,6 @@ export default {
 
     handleDelete(index, row) {
       console.log('--- Deleted: ', index, row, this.roles)
-
     },
 
     handleDownload() {

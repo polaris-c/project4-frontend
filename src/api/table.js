@@ -53,7 +53,7 @@ export function updatePeople(username, data) {
   console.log('--- api updatePeople data: ', data)
   return service({
     url: '/users/' + username + '/',
-    method: 'put',
+    method: 'patch',
     data
   })
 }

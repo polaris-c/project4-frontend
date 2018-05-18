@@ -7,7 +7,7 @@ const user = {
     username: getName(),
     name: '',
     avatar: '',
-    role: '',
+    role: ''
   },
 
   mutations: {
@@ -36,7 +36,6 @@ const user = {
   actions: {
     /* 登录 */
     Login({ commit }, userInfo) {
-
       const username = userInfo.username.trim()
       setName(username)
       commit('SET_USERNAME', username)

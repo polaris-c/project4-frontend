@@ -24,7 +24,7 @@ const permission = {
          * roles中有1,2则加载全部asyncRouterMap
          * 否则调用filterAsyncRouter一个个解析roles里的元素
          */
-        if(data.role === 1 || data.role === 2) {
+        if (data.role === 1 || data.role === 2) {
           accessedRouters = asyncRouterMap
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, data.role)

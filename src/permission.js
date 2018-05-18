@@ -9,16 +9,16 @@ const whiteList = ['/login'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
   console.log('<<<<<<<< Jump Start ======')
-  console.log('*** Permission router.beforeEach to: ', to)
-  console.log('*** Permission router.beforeEach from: ', from)
+  // console.log('*** Permission router.beforeEach to: ', to)
+  // console.log('*** Permission router.beforeEach from: ', from)
   NProgress.start()
   if (getToken() && getName()) {
     if (to.path === '/login') {
-      console.log('*** Permission router.beforeEach is to login ')
+      // console.log('*** Permission router.beforeEach is to login ')
       next({ path: '/login' })
       NProgress.done()
     } else {
-      console.log('*** Permission router.beforeEach store.getters.role: ', store.getters.role)
+      // console.log('*** Permission router.beforeEach store.getters.role: ', store.getters.role)
       const currentRole = store.getters.role
       if (currentRole !== 1 && currentRole !== 2 && currentRole !== 3) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo') // 拉取用户信息
@@ -47,7 +47,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
-      console.log('*** Permission router.beforeEach in whiteList: ', whiteList)
+      // console.log('*** Permission router.beforeEach in whiteList: ', whiteList)
       next()
     } else {
       next('/login') // 否则全部重定向到登录页

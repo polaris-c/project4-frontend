@@ -91,7 +91,7 @@
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
                 :on-change="handleAvatarChange"
-                drag>  
+                >  
                 <img v-if="peopleInfoForm.picUrl" :src="peopleInfoForm.picUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
               </el-upload>
@@ -120,10 +120,7 @@ export default {
     ...mapGetters([
       'role',
       'token'
-    ]),
-    // Authorization() {
-    //   return { Authorization: 'JWT ' + this.token } 
-    // } 
+    ])
   },
 
   data() {
@@ -156,21 +153,12 @@ export default {
       } else {
         callback(console.log('--- validateRole is OK'))
       }
-      // if (value === '1') {
-      //   if (this.role.indexOf('superAdmin') === -1) {
-      //     callback(new Error('无权限设置此用户为管理员'))
-      //   } else {
-      //     callback(console.log('--- validateRole is OK - 注意：此用户将被设置为管理员'))
-      //   }
-      // } else {
-      //   callback(console.log('--- validateRole is OK'))
-      // }
     }
 
     return {
       superPermission: false,
-      uploadForm: {},
-      peopleInfoForm: {
+      uploadForm: {}, // 上传用表单数据对象
+      peopleInfoForm: { // 显示用表单数据对象
         username: '',
         name: '',
         password: null,
@@ -209,13 +197,11 @@ export default {
   },
 
   mounted() {
-
-    if (this.role === 3) {
+    if (this.role === 1) {
       this.superPermission = true
       console.log('--- You are the superPermission!!!', this.role)
     }
-
-    // console.log('--- Authorization', this.Authorization)
+    this.uploadForm = new FormData()
   },
 
   methods: {
@@ -235,18 +221,16 @@ export default {
       this.peopleInfoForm.picUrl = window.URL.createObjectURL(file)
       console.log('--- this.picUrl: ', this.peopleInfoForm.picUrl)
 
-      this.uploadForm = new FormData();
-      this.uploadForm.append('picUrl', file, file.name);
+      this.uploadForm.append('picUrl', file, file.name)
 
-      return false;
+      return false
     },
 
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-
         if (valid) {
-
           this.uploadForm.append('username', this.peopleInfoForm.username)
+          this.uploadForm.append('userID', this.peopleInfoForm.username + this.peopleInfoForm.name)
           this.uploadForm.append('name', this.peopleInfoForm.name)
           this.uploadForm.append('password', this.peopleInfoForm.password)
           this.uploadForm.append('gender', this.peopleInfoForm.gender)

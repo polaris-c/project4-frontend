@@ -168,8 +168,14 @@
 
     <!-- 弹出框 详细展示 -->
     <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
-
-      {{ showPeopleInfo }}
+      <div style="margin-left: 30px;">
+        <img v-if="showPeopleInfo.picUrl" :src="showPeopleInfo.picUrl" class="avatar">
+      </div>
+      <ul>
+        <li v-for="(value, key) in showPeopleInfo" v-if="key != 'password' && key != 'picUrl'">
+          {{ key }}: {{ value }} 
+        </li>
+      </ul>
 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleDownload()">导出</el-button>
@@ -181,21 +187,18 @@
     <el-dialog title="编辑表单" :visible.sync="dialogFormVisible">
 
       <el-form 
-        :model="peopleInfoForm" 
+        :model="uploadForm" 
         :rules="rules"
         ref="peopleInfoComponent" 
         label-width="100px" 
         class="">
-        <!-- :rules="rules" -->
 
         <el-form-item label="照片上传" prop="picUrl">
           <el-upload 
             class=""
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="http://127.0.0.1:8000/users/"
             :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            >
+            :before-upload="beforeAvatarUpload">
             <!-- :on-change="showAvatar" -->
             <img v-if="peopleInfoForm.picUrl" :src="peopleInfoForm.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
@@ -203,16 +206,17 @@
         </el-form-item>
 
         <el-form-item label="人员编号" prop="username">
-          <el-input v-model="peopleInfoForm.username" clearable></el-input>
+          <el-input v-model="uploadForm.username" :placeholder="peopleInfoForm.username" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="人员姓名" prop="name">
-          <el-input v-model="peopleInfoForm.name" clearable></el-input>
+          <el-input v-model="uploadForm.name" :placeholder="peopleInfoForm.name" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="密码" prop="password">
           <el-input  
-            v-model="peopleInfoForm.password" 
+            v-model="uploadForm.password" 
+            placeholder="Password-invisible"
             type="password" 
             auto-complete="on" 
             clearable>
@@ -221,7 +225,8 @@
 
         <el-form-item label="确认密码" prop="checkPassword">
           <el-input 
-            v-model="peopleInfoForm.checkPassword" 
+            v-model="uploadForm.checkPassword" 
+            placeholder="Password-invisible"
             type="password" 
             auto-complete="on" 
             clearable>
@@ -229,25 +234,25 @@
         </el-form-item>
 
         <el-form-item label="性别" prop="gender">
-          <el-radio-group v-model="peopleInfoForm.gender">
+          <el-radio-group v-model="uploadForm.gender">
             <el-radio label="male">男</el-radio>
             <el-radio label="female">女</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="电话" prop="phone">
-          <el-input v-model="peopleInfoForm.phone"></el-input>
+          <el-input v-model="uploadForm.phone" :placeholder="peopleInfoForm.phone"></el-input>
         </el-form-item>
 
         <el-form-item label="权限" prop="role">
-          <el-select v-model="peopleInfoForm.role" placeholder="请选择权限">
+          <el-select v-model="uploadForm.role" placeholder="可选择权限">
             <el-option v-if = "superPermission" label="管理员" value=2></el-option>
             <el-option label="用户" value=3></el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="备注" prop="note">
-          <el-input type="textarea" v-model="peopleInfoForm.note"></el-input>
+          <el-input type="textarea" v-model="uploadForm.note" :placeholder="peopleInfoForm.note"></el-input>
         </el-form-item>
 
       </el-form>
@@ -274,7 +279,7 @@ export default {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
-        if (this.peopleInfoForm.checkPassword !== '') {
+        if (this.uploadForm.checkPassword !== '') {
           // console.log('--- validatePassword this.$refs: ', this.$refs)
           // console.log('--- validatePassword this.peopleInfoForm: ', this.peopleInfoForm)
           this.$refs.peopleInfoComponent.validateField('checkPassword')
@@ -286,7 +291,7 @@ export default {
     const validateCheckPassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== this.peopleInfoForm.password) {
+      } else if (value !== this.uploadForm.password) {
         callback(new Error('两次输入不一致'))
       } else {
         callback(console.log('--- validateCheckPassword is OK'))
@@ -294,10 +299,26 @@ export default {
     }
 
     const validateRole = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请设置权限'))
-      } else {
+      if (value !== null) {
+        if (value === '') {
+          callback(new Error('请设置权限'))
+        } else {
           callback(console.log('--- validateRole is OK'))
+        }
+      } else {
+        callback(console.log('--- validateRole role is not change'))
+      }
+    }
+
+    const validatePhone = (rule, value, callback) => {
+      if (value !== null) {
+        if (value === '') {
+          callback(new Error('请设置联系方式'))
+        } else {
+          callback(console.log('--- validatePhone Phone is OK'))
+        }
+      } else {
+        callback(console.log('--- validatePhone Phone is not change'))
       }
     }
 
@@ -319,8 +340,21 @@ export default {
 
       showPeopleInfo: {},
 
+      uploadFormData: {}, // 上传用表单数据对象
+      uploadForm: {
+        username: null,
+        name: null,
+        password: null,
+        checkPassword: null,
+        gender: null,
+        phone: null,
+        role: null,
+        picUrl: null,
+        note: null
+      },
+
       peopleInfoForm: {
-        // id: undefined,
+        // id: null,
         username: '',
         name: '',
         password: '',
@@ -332,24 +366,24 @@ export default {
         note: ''
       },
       rules: {
-        username: [
-          { required: true, message: '请输入人员编号', trigger: 'blur' }
-        ],
-        name: [
-          { required: true, message: '请输入人员姓名', trigger: 'blur' },
-          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
-        ],
+        // username: [
+        //   { required: true, message: '请输入人员编号', trigger: 'blur' }
+        // ],
+        // name: [
+        //   { required: true, message: '请输入人员姓名', trigger: 'blur' },
+        //   { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
+        // ],
         password: [
           { validator: validatePassword, required: true, trigger: 'blur' }
         ],
         checkPassword: [
           { validator: validateCheckPassword, required: true, trigger: 'blur' }
         ],
-        gender: [
-          { required: true, message: '请选择性别', trigger: 'change' }
-        ],
+        // gender: [
+        //   { required: true, message: '请选择性别', trigger: 'change' }
+        // ],
         phone: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
+          { validator: validatePhone, required: false, trigger: 'blur' }
         ],
         role: [
           { validator: validateRole, required: true, trigger: 'blur' }
@@ -375,6 +409,7 @@ export default {
       this.superPermission = true
       console.log('--- You are the superPermission!!!', this.role)
     }
+    this.uploadFormData = new FormData()
   },
 
   methods: {
@@ -409,17 +444,29 @@ export default {
     },
 
     handleEdit(index, row) {
-      console.log('--- Edit: ', index, row)
+      // console.log('--- Edit: ', index, row)
+      this.uploadFormData = new FormData()
+      for (const key in this.uploadForm) {
+        this.uploadForm[key] = null
+      }
       this.dialogFormVisible = true
       this.peopleInfoForm = Object.assign({}, row)
       this.editUsername = row.username
+      this.$nextTick(() => {
+        this.$refs['peopleInfoComponent'].clearValidate()
+      })
     },
 
     updateEdit() {
+      for (const key in this.uploadForm) {
+        if (this.uploadForm[key] !== null) {
+          this.uploadFormData.append(key, this.uploadForm[key])
+        }
+      }
+      // console.log('--- updateEdit this.uploadFormData: ', this.uploadFormData)
       this.$refs['peopleInfoComponent'].validate((valid) => {
-        if(valid) {
-          const tempData = Object.assign({}, this.peopleInfoForm)
-          updatePeople(this.editUsername, tempData).then((res) => {
+        if (valid) {
+          updatePeople(this.editUsername, this.uploadFormData).then((res) => {
             // for(const v of this.list)
             // {
             //   if(v.id === tempData.id) {
@@ -433,24 +480,22 @@ export default {
             this.fetchData()
             this.dialogFormVisible = false
           })
-          .catch(error => {
-            console.log('*** updateEdit! error: ', error)
-          })
-          
+            .catch(error => {
+              console.log('++++ ++++ updateEdit! error ++++ ++++ ', error)
+            })
         }
-        
       })
     },
 
     handleDelete(index, row) {
-      console.log('--- Deleted: ', index, row, this.role)
+      // console.log('--- Deleted: ', index, row, this.role)
       deletePeople(row.username).then((res) => {
         console.log('--- Deleted! res: ', res)
         this.fetchData()
       })
-      .catch(error => {
-        console.log('--- Deleted! error: ', error)
-      })
+        .catch(error => {
+          console.log('++++ ++++ Deleted! error ++++ ++++ ', error)
+        })
 
       if (this.role === 1) {
         alert('--- superAdmin权限 允许删除 ---')
@@ -471,14 +516,11 @@ export default {
       window.URL = window.URL || window.webkitURL
       this.peopleInfoForm.picUrl = window.URL.createObjectURL(file)
       console.log('--- this.picUrl: ', this.peopleInfoForm.picUrl)
-    },
-    handleAvatarSuccess(res, file) {
-      console.log('--- handleAvatarSuccess', res, file)
-    },
-    // showAvatar(file, fileList) {
-    //   console.log('--- showAvatar', file, fileList)
-    // },
 
+      this.uploadFormData.append('picUrl', file, file.name)
+
+      return false
+    },
 
     /* 分页 */
     handleSizeChange(val) {
