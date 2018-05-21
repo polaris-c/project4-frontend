@@ -70,7 +70,7 @@
                   class=""
                   action="https://jsonplaceholder.typicode.com/posts/"
                   :show-file-list="false"
-                  :before-upload="beforeAvatarUpload"
+                  :before-upload="beforeSampleUpload"
                   >
                   <img v-if="explosiveComSamplesForm.picUrl" :src="explosiveComSamplesForm.picUrl" class="avatar">
                   <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
@@ -100,6 +100,7 @@
 
             <el-form 
               :model="fileItem"
+              :rules="explosiveComSamplesFileRules"
               ref="fileItems"
               label-width="150px">
 
@@ -135,8 +136,9 @@
                   action=""
                   :limit="1"
                   :file-list="explosiveComSamplesFile.docUrl"
+                  :before-upload="beforeFileUpload"
                   >
-                  <el-button size="small" type="primary">点击上传</el-button>
+                  <el-button size="small" type="primary" @click="recordKey(fileItem)">点击上传</el-button>
                 </el-upload>
               </el-form-item>
 
@@ -159,7 +161,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { addDataList } from '@/api/create'
+import { addExploSample, addExploSampleFiles } from '@/api/create'
 
 export default {
   name: 'addExplosiveComSamples',
@@ -172,28 +174,30 @@ export default {
 
   data() {
     return {
+      uploadForm: {}, // 上传基本信息用表单数据对象
       explosiveComSamplesForm: {
-        sname: '',
-        sampleID: '',
-        user_id: '',
+        sname: null,
+        sampleID: null,
+        user_id: null,
         inputDate: null,
-        sampleState: '',
-        sampleOrigin: '',
-        sampleType: '',
-        sampleMake: '',
-        sampleDraw: '',
-        sampleAnalyse: '',
-        analyseCondition: '',
+        sampleState: null,
+        sampleOrigin: null,
+        sampleType: null,
+        sampleMake: null,
+        sampleDraw: null,
+        sampleAnalyse: null,
+        analyseCondition: null,
         picUrl: null,
-        picDescrip: '',
-        note: ''
+        picDescrip: null,
+        note: null
       },
+      fileUploadIndex: -1,
+      uploadFileForm: [], // 上传数据文件用表单数据对象
       explosiveComSamplesFile: [
         {
-          user_id: '',
           inputDate: null,
-          detectDevice: '',
-          detectMrfs: '',
+          detectDevice: null,
+          detectMrfs: null,
           detectType: null,
           docType: null,
           docUrl: null,
@@ -202,12 +206,21 @@ export default {
       ],
       explosiveComSamplesRules: {
         sname: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入样本名称', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
+        ],
+        sampleID: [
+          { required: true, message: '请输入样本编号', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
         ],
         inputDate: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { type: 'date', message: '请选择日期', trigger: 'change' }
         ]
+      },
+      explosiveComSamplesFileRules: {
+        detectType: [
+          { required: true, message: '请输入检测类型', trigger: 'blur' },
+        ] 
       }
     }
   },
@@ -221,39 +234,82 @@ export default {
   mounted() {
     this.explosiveComSamplesForm.inputDate = new Date()
     this.explosiveComSamplesForm.user_id = this.name
+    this.uploadForm = new FormData()
+    let formData = new FormData()
+    this.uploadFileForm.push(formData)
   },
 
   methods: {
+
+    /* 提交样本基本信息 */
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          addDataList(this.explosiveComSamplesForm).then((res) => {
-            console.log('submit! res: ', res)
+          this.uploadForm.append('sname', this.explosiveComSamplesForm.sname)
+          this.uploadForm.append('sampleID', this.explosiveComSamplesForm.sampleID)
+          this.uploadForm.append('user_id', this.explosiveComSamplesForm.user_id)
+          this.uploadForm.append('inputDate', this.explosiveComSamplesForm.inputDate)
+          this.uploadForm.append('sampleState', this.explosiveComSamplesForm.sampleState)
+          this.uploadForm.append('sampleOrigin', this.explosiveComSamplesForm.sampleOrigin)
+          this.uploadForm.append('sampleType', this.explosiveComSamplesForm.sampleType)
+          this.uploadForm.append('sampleMake', this.explosiveComSamplesForm.sampleMake)
+          this.uploadForm.append('sampleDraw', this.explosiveComSamplesForm.sampleDraw)
+          this.uploadForm.append('sampleAnalyse', this.explosiveComSamplesForm.sampleAnalyse)
+          this.uploadForm.append('analyseCondition', this.explosiveComSamplesForm.analyseCondition)
+          this.uploadForm.append('picDescrip', this.explosiveComSamplesForm.picDescrip)
+          this.uploadForm.append('note', this.explosiveComSamplesForm.note)
+
+          addExploSample(this.uploadForm).then(res => {
+            console.log('uploadForm submit! res: ', res)
+            this.submitFiles(res.data.id)
           })
         } else {
-          console.log('error submit!!')
+          console.log('++++ ++++ error submit! ++++ ++++')
           return false
         }
       })
     },
+
+    /* 提交样本数据文件 */
+    submitFiles(id) {
+      for (const i in this.$refs.fileItems) {
+        this.$refs.fileItems[i].validate(valid => {
+          if(valid) {
+            this.uploadFileForm[i].append('exploSample', id) 
+            this.uploadFileForm[i].append('detectDevice', this.explosiveComSamplesFile[i].detectDevice) 
+            this.uploadFileForm[i].append('detectMrfs', this.explosiveComSamplesFile[i].detectMrfs) 
+            this.uploadFileForm[i].append('detectType', this.explosiveComSamplesFile[i].detectType) 
+            this.uploadFileForm[i].append('docType', this.explosiveComSamplesFile[i].docType) 
+            addExploSampleFiles(this.uploadFileForm[i]).then(res => {
+              console.log('uploadFileForm submit! res: ', res)
+            })
+          }
+          else {
+            console.log('++++ ++++ error submitFiles! ++++ ++++')
+            return false
+          }
+        })
+      }
+      this.goBack()
+    },
+
+    /* 样本基本信息表单操作 */
     resetForm(formName) {
       console.log(this.$refs)
       this.$refs[formName].resetFields()
     },
-    goBack() {
-      this.$router.go(-1)
-    },
-
-    beforeAvatarUpload(file) {
-      console.log('--- beforeAvatarUpload', file)
+    beforeSampleUpload(file) {
+      console.log('--- beforeSampleUpload', file)
       window.URL = window.URL || window.webkitURL
       this.explosiveComSamplesForm.picUrl = window.URL.createObjectURL(file)
+      this.uploadForm.append('picUrl', file, file.name)
+      return false
     },
 
+    /* 样本文件信息表单操作 */
     addFile() {
       this.explosiveComSamplesFile.push(
         {
-          user_id: '',
           inputDate: null,
           detectDevice: '',
           detectMrfs: '',
@@ -263,6 +319,8 @@ export default {
           key: Date.now()
         }
       )
+      let formData = new FormData()
+      this.uploadFileForm.push(formData)
     },
     resetFile(fileKey) {
       // console.log(fileKey, this.$refs)
@@ -276,8 +334,26 @@ export default {
     removeFile(fileItem) {
       const fileIndex = this.explosiveComSamplesFile.indexOf(fileItem)
       this.explosiveComSamplesFile.splice(fileIndex, 1)
-    }
-  }
+      this.uploadFileForm.splice(fileIndex, 1)
+    },
+    recordKey(fileItem) {
+      this.fileUploadIndex = this.explosiveComSamplesFile.indexOf(fileItem)
+      console.log('--- recordKey fileUploadIndex', this.fileUploadIndex)
+    },
+    beforeFileUpload(file) {
+      console.log('--- beforeFileUpload fileUploadIndex', this.fileUploadIndex)
+      if(this.fileUploadIndex >= 0) {
+        this.uploadFileForm[this.fileUploadIndex].append('docUrl', file, file.name)
+      } else {
+        console.log('++++ ++++ error beforeFileUpload! ++++ ++++')
+      }
+      return false
+    },
+
+    goBack() {
+      this.$router.go(-1)
+    },
+  },
 
 }
 </script>

@@ -171,6 +171,7 @@
       <div style="margin-left: 30px;">
         <img v-if="showPeopleInfo.picUrl" :src="showPeopleInfo.picUrl" class="avatar">
       </div>
+
       <ul>
         <li v-for="(value, key) in showPeopleInfo" v-if="key != 'password' && key != 'picUrl'">
           {{ key }}: {{ value }} 
@@ -464,9 +465,9 @@ export default {
         }
       }
       // console.log('--- updateEdit this.uploadFormData: ', this.uploadFormData)
-      this.$refs['peopleInfoComponent'].validate((valid) => {
+      this.$refs['peopleInfoComponent'].validate(valid => {
         if (valid) {
-          updatePeople(this.editUsername, this.uploadFormData).then((res) => {
+          updatePeople(this.editUsername, this.uploadFormData).then(res => {
             // for(const v of this.list)
             // {
             //   if(v.id === tempData.id) {
@@ -489,7 +490,7 @@ export default {
 
     handleDelete(index, row) {
       // console.log('--- Deleted: ', index, row, this.role)
-      deletePeople(row.username).then((res) => {
+      deletePeople(row.username).then(res => {
         console.log('--- Deleted! res: ', res)
         this.fetchData()
       })

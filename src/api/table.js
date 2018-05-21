@@ -1,38 +1,6 @@
 import service from '@/utils/request'
 
-
-export function getDataList(params) {
-  return service({
-    url: '/table/explosiveList',
-    method: 'get',
-    params
-  })
-}
-
-export function getShapeDataList(params) {
-  return service({
-    url: '/table/deviceShapeList',
-    method: 'get',
-    params
-  })
-}
-
-export function getExlpoMatch(params) {
-  return service({
-    url: '/table/exlpoMatch ',
-    method: 'get',
-    params
-  })
-}
-
-export function getDevCompMatch(params) {
-  return service({
-    url: '/table/devCompMatch',
-    method: 'get',
-    params
-  })
-}
-
+/* 人员管理 */
 export function getPeopleList(params) {
   return service({
     url: '/users/',
@@ -64,6 +32,72 @@ export function deletePeople(username) {
     method: 'delete',
   })
 }
+
+/* 常见样本 */
+export function getExploSampleList(params) {
+  return service({
+    url: '/exploSamples/',
+    method: 'get',
+    params
+  })
+}
+
+export function showExploSample(id) {
+  return service({
+    url: '/exploSamples/' + id + '/',
+    method: 'get',
+  })
+}
+
+export function updateExploSample(id, data) {
+  return service({
+    url: '/exploSamples/' + id + '/',
+    method: 'patch',
+    data
+  })
+}
+
+export function deleteExploSample(id) {
+  return service({
+    url: '/exploSamples/' + id + '/',
+    method: 'delete',
+  })
+}
+
+export function getDevCompSampleList(params) {
+  return service({
+    url: '/devCompSamples/',
+    method: 'get',
+    params
+  })
+}
+
+export function getDevShapeSamples(params) {
+  return service({
+    url: '/devShapeSamples/',
+    method: 'get',
+    params
+  })
+}
+
+/* 案件物证 */
+export function getExlpoMatch(params) {
+  return service({
+    url: '/table/exlpoMatch ',
+    method: 'get',
+    params
+  })
+}
+
+export function getDevCompMatch(params) {
+  return service({
+    url: '/table/devCompMatch',
+    method: 'get',
+    params
+  })
+}
+
+
 
 export function updateData(data) {
   return service({

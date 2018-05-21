@@ -152,7 +152,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="dialogShowVisible = true">
+            @click="handleDetail(scope.$index, scope.row)">
             <!-- @click="handleEdit(scope.$index, scope.row)" -->
             详 细
           </el-button>
@@ -188,6 +188,16 @@
 
     <!-- 弹出框 详细展示 -->
     <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
+      <div style="margin-left: 30px;">
+        <img v-if="showExploSampleInfo.picUrl" :src="showExploSampleInfo.picUrl" class="avatar">
+      </div>
+
+      <ul>
+        <li v-for="(value, key) in showExploSampleInfo" v-if="key !== 'picUrl' ">
+          <!-- && key !== 'exploSampleFile' -->
+          {{ key }}: {{ value }}
+        </li>
+      </ul>
 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleDownload()">导出</el-button>
@@ -289,7 +299,7 @@
 </template>
 
 <script>
-import { getDataList, updateData } from '@/api/table'
+import { getExploSampleList, showExploSample, deleteExploSample } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -307,6 +317,8 @@ export default {
       startIndex: 1,
       dialogFormVisible: false,
       dialogShowVisible: false,
+
+      showExploSampleInfo: {},
 
       explosiveComSamplesForm: {
         id: undefined,
@@ -341,30 +353,17 @@ export default {
     ])
   },
 
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-
   created() {
     this.fetchData()
-    // console.log('--- PersonnelManagement this.$route: ', this.$route)
-    // console.log('--- PersonnelManagement this.$router: ', this.$router)
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      getDataList(this.listQuery).then(response => {
-        this.list = response.data.items
+      getExploSampleList().then(response => {
+        this.list = response.data
         this.listLoading = false
-        this.handleCurrentChange(1)
+        this.handleCurrentChange(this.currentPage)
         // console.log('--- PersonnelManagement List: ', this.list)
       })
     },
@@ -379,6 +378,13 @@ export default {
 
     handleDownloadList() {
       alert('已导出！')
+    },
+
+    handleDetail(index, row) {
+      showExploSample(row.id).then(res => {
+        this.showExploSampleInfo = res.data
+      })
+      this.dialogShowVisible = true
     },
 
     handleEdit(index, row) {
@@ -418,7 +424,11 @@ export default {
     },
 
     handleDelete(index, row) {
-      console.log('--- Deleted: ', index, row, this.roles)
+      console.log('--- Deleted: ', index, row, this.role)
+      deleteExploSample(row.id).then(res => {
+        console.log('--- Deleted! res: ', res)
+        this.fetchData()
+      })
     },
 
     handleDownload() {
