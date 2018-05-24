@@ -22,7 +22,7 @@
         style="margin-left:30px;"
         @click="handleCreate"
         round>
-        NEW
+        新增样本
       </el-button>
 
       <!-- 下载按钮 -->
@@ -30,7 +30,7 @@
         style="margin-left:20px"
         @click=""
         round>
-        Download
+        数据导出
       </el-button>
     </div>
 
@@ -179,6 +179,7 @@
 
     </el-table>
 
+    <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination
         @size-change="handleSizeChange"
@@ -192,6 +193,7 @@
       </el-pagination>
     </div>
 
+    <!-- 弹出框 详细展示 -->
     <el-dialog></el-dialog>
 
     <el-dialog title="编辑表单" :visible.sync="dialogFormVisible">
@@ -270,7 +272,7 @@
 </template>
 
 <script>
-import { getShapeDataList, updateDeviceShapeData } from '@/api/table'
+import { getDevShapeSampleList, showDevShapeSample, updateDevShapeSample, deleteDevShapeSample } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -286,6 +288,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       startIndex: 1,
+      
       dialogShowVisible: false,
       dialogFormVisible: false,
 
@@ -328,12 +331,12 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getShapeDataList().then(response => {
-        this.list = response.data.items
-        this.listLength = response.data.items.length
+      getDevShapeSampleList().then(response => {
+        this.list = response.data
+        this.listLength = response.data.length
         this.listLoading = false
-        this.handleCurrentChange(1)
-        // console.log(' --- response: ', response)
+        this.handleCurrentChange(this.currentPage)
+        console.log(' --- response: ', response)
       })
     },
 
@@ -360,10 +363,10 @@ export default {
     },
 
     updateEdit() {
-      this.$refs['deviceShapeComponent'].validate((valid) => {
+      this.$refs['deviceShapeComponent'].validate(valid => {
         if (valid) {
           const tempData = Object.assign({}, this.deviceShapeForm)
-          updateDeviceShapeData(tempData).then(() => {
+          updateDevShapeSample(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === tempData.id) {
                 const index = this.list.indexOf(v)

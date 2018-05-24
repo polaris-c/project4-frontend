@@ -191,8 +191,8 @@ export default {
         picDescrip: null,
         note: null
       },
-      fileUploadIndex: -1,
-      uploadFileForm: [], // 上传数据文件用表单数据对象
+      uploadFileIndex: -1, // 上传数据文件时记录数据文件信息号
+      uploadFileForm: [], // 上传数据文件信息用表单数据对象
       explosiveComSamplesFile: [
         {
           inputDate: null,
@@ -283,8 +283,7 @@ export default {
             addExploSampleFiles(this.uploadFileForm[i]).then(res => {
               console.log('uploadFileForm submit! res: ', res)
             })
-          }
-          else {
+          } else {
             console.log('++++ ++++ error submitFiles! ++++ ++++')
             return false
           }
@@ -337,13 +336,13 @@ export default {
       this.uploadFileForm.splice(fileIndex, 1)
     },
     recordKey(fileItem) {
-      this.fileUploadIndex = this.explosiveComSamplesFile.indexOf(fileItem)
-      console.log('--- recordKey fileUploadIndex', this.fileUploadIndex)
+      this.uploadFileIndex = this.explosiveComSamplesFile.indexOf(fileItem)
+      console.log('--- recordKey uploadFileIndex', this.uploadFileIndex)
     },
     beforeFileUpload(file) {
-      console.log('--- beforeFileUpload fileUploadIndex', this.fileUploadIndex)
-      if(this.fileUploadIndex >= 0) {
-        this.uploadFileForm[this.fileUploadIndex].append('docUrl', file, file.name)
+      console.log('--- beforeFileUpload uploadFileIndex', this.uploadFileIndex)
+      if(this.uploadFileIndex >= 0) {
+        this.uploadFileForm[this.uploadFileIndex].append('docUrl', file, file.name)
       } else {
         console.log('++++ ++++ error beforeFileUpload! ++++ ++++')
       }

@@ -33,12 +33,19 @@
                 </el-date-picker>
               </el-form-item>
 
+              <el-form-item label="算法选择" prop="isCircuit">
+                <el-radio-group v-model="deviceShapeForm.isCircuit">
+                  <el-radio :label="0">电路板</el-radio>
+                  <el-radio :label="1">非电路板</el-radio>
+                </el-radio-group>
+              </el-form-item>
+
               <el-form-item label="厂家" prop="mrfs">
                 <el-input v-model="deviceShapeForm.mrfs" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="型号" prop="model">
-                <el-input v-model="deviceShapeForm.model" clearable></el-input>
+              <el-form-item label="型号" prop="sampleModel">
+                <el-input v-model="deviceShapeForm.sampleModel" clearable></el-input>
               </el-form-item>
 
               <el-form-item label="商标" prop="trademark">
@@ -56,10 +63,9 @@
               <el-form-item label="样本图片" prop="originalUrl">
                 <el-upload 
                   class=""
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action=""
                   :show-file-list="false"
-                  :before-upload="beforeAvatarUpload"
-                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforePicUpload"
                   >
                   <img v-if="deviceShapeForm.originalUrl" :src="deviceShapeForm.originalUrl" class="avatar">
                   <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
@@ -89,6 +95,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { addDevShapeSample } from '@/api/create'
 
 export default {
   name: 'addDeviceShape',
@@ -101,22 +108,23 @@ export default {
 
   data() {
     return {
+      uploadForm: {}, // 上传基本信息用表单数据对象
       deviceShapeForm: {
-        sname: '',
-        sampleID: '',
+        sname: null,
+        sampleID: null,
         isCircuit: null,
-        user_id: '',
+        user_id: null,
         inputDate: null,
-        mrfs: '',
-        model: '',
-        trademark: '',
-        function: '',
-        belongTo: '',
+        mrfs: null,
+        sampleModel: null,
+        trademark: null,
+        function: null,
+        belongTo: null,
         originalUrl: null,
         originalResolution: null,
         nomUrl: null,
         nomResolution: null,
-        note: ''
+        note: null
       }
     }
   },
@@ -124,15 +132,34 @@ export default {
   mounted() {
     this.deviceShapeForm.inputDate = new Date()
     this.deviceShapeForm.user_id = this.name
+    this.uploadForm = new FormData()
   },
 
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          alert('submit!')
+          this.uploadForm.append('sname', this.deviceShapeForm.sname)
+          this.uploadForm.append('sampleID', this.deviceShapeForm.sampleID)
+          this.uploadForm.append('isCircuit', this.deviceShapeForm.isCircuit)
+          this.uploadForm.append('user_id', this.deviceShapeForm.user_id)
+          this.uploadForm.append('inputDate', this.deviceShapeForm.inputDate)
+          this.uploadForm.append('mrfs', this.deviceShapeForm.mrfs)
+          this.uploadForm.append('sampleModel', this.deviceShapeForm.sampleModel)
+          this.uploadForm.append('trademark', this.deviceShapeForm.trademark)
+          this.uploadForm.append('function', this.deviceShapeForm.function)
+          this.uploadForm.append('belongTo', this.deviceShapeForm.belongTo)
+          this.uploadForm.append('originalResolution', this.deviceShapeForm.originalResolution)
+          this.uploadForm.append('nomUrl', this.deviceShapeForm.nomUrl)
+          this.uploadForm.append('nomResolution', this.deviceShapeForm.nomResolution)
+          this.uploadForm.append('note', this.deviceShapeForm.note)
+
+          addDevShapeSample(this.uploadForm).then(res => {
+            console.log('uploadForm submit! res: ', res)
+            this.goBack()
+          })
         } else {
-          console.log('error submit!!')
+          console.log('++++ ++++ error submit! ++++ ++++')
           return false
         }
       })
@@ -141,19 +168,17 @@ export default {
       console.log(this.$refs)
       this.$refs[formName].resetFields()
     },
+    beforePicUpload(file) {
+      console.log('--- beforePicUpload', file)
+      window.URL = window.URL || window.webkitURL
+      this.deviceShapeForm.originalUrl = window.URL.createObjectURL(file)
+      this.uploadForm.append('originalUrl', file, file.name)
+      return false
+    },
+
     goBack() {
       this.$router.go(-1)
     },
-
-    beforeAvatarUpload(file) {
-      console.log('--- beforeAvatarUpload', file)
-      window.URL = window.URL || window.webkitURL
-      this.deviceShapeForm.originalUrl = window.URL.createObjectURL(file)
-      console.log('--- beforeAvatarUpload URL: ', this.deviceShapeForm.originalUrl)
-    },
-    handleAvatarSuccess(res, file) {
-      console.log('--- handleAvatarSuccess', res, file)
-    }
   }
 
 }

@@ -152,7 +152,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="dialogShowVisible = true">
+            @click="handleDetail(scope.$index, scope.row)">
             <!-- @click="handleEdit(scope.$index, scope.row)" -->
             详 细
           </el-button>
@@ -188,6 +188,15 @@
 
     <!-- 弹出框 详细展示 -->
     <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
+      <div style="margin-left: 30px;">
+        <img v-if="showDevCompSampleInfo.picUrl" :src="showDevCompSampleInfo.picUrl" class="avatar">
+      </div>
+
+      <ul>
+        <li v-for="(key, value) in showDevCompSampleInfo" v-if="key !== 'picUrl'">
+          {{ key }}: {{ value }}
+        </li>
+      </ul>
 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleDownload()">导出</el-button>
@@ -201,7 +210,7 @@
 
       <el-form
         :model="deviceIngredientForm"
-        :rules="explosiveComSamplesRules"
+        :rules="deviceIngredientRules"
         ref="deviceIngredientComponent"
         label-width="100px" >
 
@@ -289,7 +298,7 @@
 </template>
 
 <script>
-import { getDataList, updateData } from '@/api/table'
+import { getDevCompSampleList, showDevCompSample, updateDevCompSample, deleteDevCompSample } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -305,10 +314,14 @@ export default {
       currentPage: 1,
       pageSize: 10,
       startIndex: 1,
+
       dialogFormVisible: false,
       dialogShowVisible: false,
-      deviceIngredientForm: {
-        id: undefined,
+
+      showDevCompSampleInfo: {}, // 数据详情对象
+      uploadForm: {}, // 上传用表单数据对象
+      deviceIngredientForm: { // 显示用表单数据对象
+        id: null,
         sname: '',
         sampleID: '',
         user_id: '',
@@ -324,7 +337,7 @@ export default {
         picDescrip: '',
         note: ''
       },
-      explosiveComSamplesRules: {
+      deviceIngredientRules: {
         sname: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
@@ -343,31 +356,17 @@ export default {
     ])
   },
 
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-
   created() {
     this.fetchData()
-    // console.log('--- PersonnelManagement this.$route: ', this.$route)
-    // console.log('--- PersonnelManagement this.$router: ', this.$router)
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      getDataList(this.listQuery).then(response => {
-        this.list = response.data.items
+      getDevCompSampleList().then(response => {
+        this.list = response.data
         this.listLoading = false
-        // console.log('--- PersonnelManagement List: ', this.list)
-        this.handleCurrentChange(1)
+        this.handleCurrentChange(this.currentPage)
       })
     },
 
@@ -381,6 +380,13 @@ export default {
 
     handleDownloadList() {
       alert('已导出！')
+    },
+
+    handleDetail(index, row) {
+      showDevCompSample(row.id).then(res => {
+        this.showDevCompSampleInfo = res.data
+      })
+      this.dialogShowVisible = true
     },
 
     handleEdit(index, row) {

@@ -299,7 +299,7 @@
 </template>
 
 <script>
-import { getExploSampleList, showExploSample, deleteExploSample } from '@/api/table'
+import { getExploSampleList, showExploSample, deleteExploSample, updateExploSample } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -315,13 +315,14 @@ export default {
       currentPage: 1,
       pageSize: 10,
       startIndex: 1,
+
       dialogFormVisible: false,
       dialogShowVisible: false,
 
-      showExploSampleInfo: {},
-
-      explosiveComSamplesForm: {
-        id: undefined,
+      showExploSampleInfo: {}, // 数据详情对象
+      uploadForm: {}, // 上传用表单数据对象
+      explosiveComSamplesForm: { // 显示用表单数据对象
+        id: null,
         sname: '',
         sampleID: '',
         user_id: '',
@@ -364,7 +365,6 @@ export default {
         this.list = response.data
         this.listLoading = false
         this.handleCurrentChange(this.currentPage)
-        // console.log('--- PersonnelManagement List: ', this.list)
       })
     },
 
