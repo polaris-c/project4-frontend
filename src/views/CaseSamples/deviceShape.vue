@@ -22,7 +22,7 @@
         style="margin-left:30px;"
         @click="handleCreate"
         round>
-        NEW
+        新增物证
       </el-button>
 
       <!-- 下载按钮 -->
@@ -30,7 +30,7 @@
         style="margin-left:20px"
         @click=""
         round>
-        Download
+        数据导出
       </el-button>
     </div>
 
@@ -39,7 +39,7 @@
       :data="currentList"
       v-loading="listLoading"
       element-loading-text="loading......"
-      style="width:100%; margin-top:20px;"
+      style="width:752px; margin-top:20px;"
       border fit highlight-current-row stripe>
       
       <el-table-column
@@ -52,20 +52,10 @@
 
       <el-table-column
         align="center"
-        label="sampleID"
-        fixed="left"
+        label="eviID"
         width="100">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleID}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="sname"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sname}}</span>
+          <span>{{scope.row.eviID}}</span>
         </template>
       </el-table-column>
 
@@ -75,8 +65,8 @@
         width="100">
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.isCircuit === 0 ? 'success' : 'warning'">
-            <span>{{scope.row.isCircuit === 0 ? "PCB" : "OTHERS"}}</span>
+            :type="scope.row.isCircuit === true ? 'success' : 'warning'">
+            <span>{{scope.row.isCircuit === true ? "PCB" : "OTHERS"}}</span>
           </el-tag>
         </template>
       </el-table-column>
@@ -100,51 +90,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column
-        align="center"
-        label="mrfs"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.mrfs}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="model"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.model}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="trademark"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.trademark}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="function"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.function}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="belongTo"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.belongTo}}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column 
         align="center"
         fixed="right"
@@ -153,8 +98,8 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="dialogShowVisible = true">
-            <!-- @click="handleEdit(scope.$index, scope.row)" -->
+            @click="handleDetail(scope.$index, scope.row)">
+            <!-- @click="handleDetail(scope.$index, scope.row)" -->
             详 细
           </el-button>
           <el-button
@@ -186,7 +131,23 @@
       </el-pagination>
     </div>
 
-    <el-dialog></el-dialog>
+    <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
+      <div style="margin-left: 30px;">
+        <img v-if="showDevShapeEvisInfo.originalUrl" :src="showDevShapeEvisInfo.originalUrl" class="avatar">
+      </div>
+
+      <ul>
+        <li v-for="(value, key) in showDevShapeEvisInfo" v-if="key !== 'originalUrl' ">
+          <!-- && key !== 'exploSampleFile' -->
+          {{ key }}: {{ value }}
+        </li>
+      </ul>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleDownload()">导出</el-button>
+        <el-button type="" @click="dialogShowVisible = false">返回</el-button>
+      </div>
+    </el-dialog>
 
     <el-dialog title="编辑表单" :visible.sync="dialogFormVisible">
       <el-form
@@ -194,12 +155,8 @@
         ref="deviceShapeComponent"
         label-width="100px" >
 
-        <el-form-item label="装置名称" prop="sname">
-          <el-input v-model="deviceShapeForm.sname" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="装置编号" prop="sampleID">
-          <el-input v-model="deviceShapeForm.sampleID" clearable></el-input>
+        <el-form-item label="装置编号" prop="eviID">
+          <el-input v-model="deviceShapeForm.eviID" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="处理人员编号" prop="user_id">
@@ -264,7 +221,7 @@
 </template>
 
 <script>
-import { getShapeDataList, updateDeviceShapeData } from '@/api/table'
+import { getDevShapeEvisList, showDevShapeEvis, updateDevShapeEvis, deleteDevShapeEvis } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -280,21 +237,17 @@ export default {
       currentList: [],
       currentPage: 1,
       pageSize: 10,
+
       dialogShowVisible: false,
       dialogFormVisible: false,
 
+      showDevShapeEvisInfo: { },
       deviceShapeForm: {
         id: null,
-        sname: '',
-        sampleID: '',
+        eviID: '',
         isCircuit: null,
         user_id: '',
         inputDate: null,
-        mrfs: '',
-        model: '',
-        trademark: '',
-        function: '',
-        belongTo: '',
         originalUrl: null,
         originalResolution: null,
         nomUrl: null,
@@ -310,29 +263,30 @@ export default {
     ])
   },
 
-  filters: {
-
-  },
-
   created() {
     this.fetchData()
-    // console.log(' --- getShapeDataList function: ', getShapeDataList)
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      getShapeDataList().then(response => {
-        this.list = response.data.items
-        this.listLength = response.data.items.length
+      getDevShapeEvisList().then(response => {
+        this.list = response.data
+        this.listLength = response.data.length
         this.listLoading = false
-        this.handleCurrentChange(1)
-        // console.log(' --- response: ', response)
+        this.handleCurrentChange(this.currentPage)
       })
     },
 
     handleCreate() {
       this.$router.push('/CaseSamples/addDeviceShape')
+    },
+
+    handleDetail(index, row) {
+      showDevShapeEvis(row.id).then(res => {
+        this.showDevShapeEvisInfo = res.data
+      })
+      this.dialogShowVisible = true
     },
 
     handleEdit(index, row) {
@@ -346,10 +300,10 @@ export default {
     },
 
     updateEdit() {
-      this.$refs['deviceShapeComponent'].validate((valid) => {
+      this.$refs['deviceShapeComponent'].validate(valid => {
         if (valid) {
           const tempData = Object.assign({}, this.deviceShapeForm)
-          updateDeviceShapeData(tempData).then(() => {
+          showDevShapeEvis(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === tempData.id) {
                 const index = this.list.indexOf(v)
@@ -366,6 +320,10 @@ export default {
 
     handleDelete(index, row) {
       console.log(' --- handleDelete: ', index, row)
+      deleteDevShapeEvis(row.id).then(res => {
+        console.log('--- Deleted! res: ', res)
+        this.fetchData()
+      })
     },
 
     handleSizeChange(newPageSize) {

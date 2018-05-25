@@ -319,13 +319,8 @@ export default {
     ])
   },
 
-  filters: {
-
-  },
-
   created() {
     this.fetchData()
-    // console.log(' --- getShapeDataList function: ', getShapeDataList)
   },
 
   methods: {

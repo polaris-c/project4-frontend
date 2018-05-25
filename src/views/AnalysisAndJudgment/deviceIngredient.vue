@@ -45,20 +45,20 @@
 
       <el-table-column 
         align="center" 
-        label="sampleID" 
+        label="evidenceID " 
         fixed="left"
         width="100">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleID}}</span>
+          <span>{{scope.row.evidenceID }}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sname" 
+        label="caseID" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sname}}</span>
+          <span>{{scope.row.caseID}}</span>
         </template>
       </el-table-column>
 
@@ -74,55 +74,37 @@
 
       <el-table-column 
         align="center" 
-        label="sampleState" 
+        label="eviState" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleState}}</span>
+          <span>{{scope.row.eviState}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleOrigin" 
+        label="eviMake" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleOrigin}}</span>
+          <span>{{scope.row.eviMake}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleType" 
+        label="eviDraw" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleType}}</span>
+          <span>{{scope.row.eviDraw}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleMake" 
+        label="eviAnalyse" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleMake}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column 
-        align="center" 
-        label="sampleDraw" 
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sampleDraw}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column 
-        align="center" 
-        label="sampleAnalyse" 
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sampleAnalyse}}</span>
+          <span>{{scope.row.eviAnalyse}}</span>
         </template>
       </el-table-column>
 
@@ -178,7 +160,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleDownload()">导出</el-button>
-        <el-button type="" @click="dialogShowVisible = false">返回</el-button>
+        <el-button type="" @click="dialogShowVisible=false">返回</el-button>
       </div>
 
     </el-dialog>
@@ -187,7 +169,7 @@
 </template>
 
 <script>
-import { getDataList } from '@/api/table'
+import { getDevCompEvisList } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -213,31 +195,17 @@ export default {
     ])
   },
 
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-
   created() {
     this.fetchData()
-    // console.log('--- PersonnelManagement this.$route: ', this.$route)
-    // console.log('--- PersonnelManagement this.$router: ', this.$router)
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      getDataList(this.listQuery).then(response => {
-        this.list = response.data.items
+      getDevCompEvisList().then(response => {
+        this.list = response.data
         this.listLoading = false
-        this.handleCurrentChange(1)
-        // console.log('--- PersonnelManagement List: ', this.list)
+        this.handleCurrentChange(this.currentPage)
       })
     },
 

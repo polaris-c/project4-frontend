@@ -33,7 +33,7 @@
                 </el-date-picker>
               </el-form-item>
 
-              <el-form-item label="算法选择" prop="isCircuit">
+              <el-form-item label="装置类别" prop="isCircuit">
                 <el-radio-group v-model="deviceShapeForm.isCircuit">
                   <el-radio :label="0">电路板</el-radio>
                   <el-radio :label="1">非电路板</el-radio>

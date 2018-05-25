@@ -30,7 +30,7 @@
       :data="currentList"
       v-loading="listLoading"
       element-loading-text="loading......"
-      style="width:100%; margin-top:20px;"
+      style="width:752px; margin-top:20px;"
       border fit highlight-current-row stripe>
       
       <el-table-column
@@ -43,20 +43,10 @@
 
       <el-table-column
         align="center"
-        label="sampleID"
-        fixed="left"
+        label="eviID"
         width="100">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleID}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="sname"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sname}}</span>
+          <span>{{scope.row.eviID}}</span>
         </template>
       </el-table-column>
 
@@ -66,8 +56,8 @@
         width="100">
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.isCircuit === 0 ? 'success' : 'warning'">
-            <span>{{scope.row.isCircuit === 0 ? "PCB" : "OTHERS"}}</span>
+            :type="scope.row.isCircuit === true ? 'success' : 'warning'">
+            <span>{{scope.row.isCircuit === true ? "PCB" : "OTHERS"}}</span>
           </el-tag>
         </template>
       </el-table-column>
@@ -88,51 +78,6 @@
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
           <span>{{scope.row.inputDate}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="mrfs"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.mrfs}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="model"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.model}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="trademark"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.trademark}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="function"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.function}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        align="center"
-        label="belongTo"
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.belongTo}}</span>
         </template>
       </el-table-column>
 
@@ -181,7 +126,7 @@
 </template>
 
 <script>
-import { getShapeDataList } from '@/api/table'
+import { getDevShapeEvisList } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -212,18 +157,16 @@ export default {
 
   created() {
     this.fetchData()
-    // console.log(' --- getShapeDataList function: ', getShapeDataList)
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      getShapeDataList().then(response => {
-        this.list = response.data.items
-        this.listLength = response.data.items.length
+      getDevShapeEvisList().then(response => {
+        this.list = response.data
+        this.listLength = response.data.length
         this.listLoading = false
-        this.handleCurrentChange(1)
-        // console.log(' --- response: ', response)
+        this.handleCurrentChange(this.currentPage)
       })
     },
 

@@ -11,12 +11,8 @@
               ref="deviceShapeComponent"
               label-width="100px" >
 
-              <el-form-item label="装置名称" prop="sname">
-                <el-input v-model="deviceShapeForm.sname" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="装置编号" prop="sampleID">
-                <el-input v-model="deviceShapeForm.sampleID" clearable></el-input>
+              <el-form-item label="装置编号" prop="eviID">
+                <el-input v-model="deviceShapeForm.eviID" clearable></el-input>
               </el-form-item>
 
               <el-form-item label="处理人员编号" prop="user_id">
@@ -32,32 +28,19 @@
                 </el-date-picker>
               </el-form-item>
 
-              <el-form-item label="厂家" prop="mrfs">
-                <el-input v-model="deviceShapeForm.mrfs" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="型号" prop="model">
-                <el-input v-model="deviceShapeForm.model" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="商标" prop="trademark">
-                <el-input v-model="deviceShapeForm.trademark" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="功能" prop="function">
-                <el-input v-model="deviceShapeForm.function" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="所属装置" prop="belongTo">
-                <el-input v-model="deviceShapeForm.belongTo" clearable></el-input>
+              <el-form-item label="物证类别" prop="isCircuit">
+                <el-radio-group v-model="deviceShapeForm.isCircuit">
+                  <el-radio :label=true>电路板</el-radio>
+                  <el-radio :label=false>非电路板</el-radio>
+                </el-radio-group>
               </el-form-item>
 
               <el-form-item label="样本图片" prop="originalUrl">
                 <el-upload 
                   class=""
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action=""
                   :show-file-list="false"
-                  :before-upload="beforeAvatarUpload"
+                  :before-upload="beforePicUpload"
                   >
                   <img v-if="deviceShapeForm.originalUrl" :src="deviceShapeForm.originalUrl" class="avatar">
                   <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
@@ -87,6 +70,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { addDevShapeEvis } from '@/api/create'
 
 export default {
   name: 'addDeviceShape',
@@ -99,23 +83,17 @@ export default {
 
   data() {
     return {
+      uploadForm: {}, // 上传基本信息用表单数据对象
       deviceShapeForm: {
-        id: null,
-        sname: '',
-        sampleID: '',
+        eviID: null,
         isCircuit: null,
-        user_id: '',
+        user_id: null,
         inputDate: null,
-        mrfs: '',
-        model: '',
-        trademark: '',
-        function: '',
-        belongTo: '',
         originalUrl: null,
         originalResolution: null,
         nomUrl: null,
         nomResolution: null,
-        note: ''
+        note: null
       }
     }
   },
@@ -123,15 +101,28 @@ export default {
   mounted() {
     this.deviceShapeForm.inputDate = new Date()
     this.deviceShapeForm.user_id = this.name
+    this.uploadForm = new FormData()
   },
 
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.uploadForm.append('eviID', this.deviceShapeForm.eviID)
+          this.uploadForm.append('isCircuit', this.deviceShapeForm.isCircuit)
+          this.uploadForm.append('user_id', this.deviceShapeForm.user_id)
+          this.uploadForm.append('inputDate', this.deviceShapeForm.inputDate)
+          this.uploadForm.append('originalUrl', this.deviceShapeForm.originalUrl)
+          this.uploadForm.append('originalResolution', this.deviceShapeForm.originalResolution)
+          this.uploadForm.append('nomUrl', this.deviceShapeForm.nomUrl)
+          this.uploadForm.append('nomResolution', this.deviceShapeForm.nomResolution)
+          this.uploadForm.append('note', this.deviceShapeForm.note)
+          addDevShapeEvis(this.uploadForm).then(res => {
+            console.log('uploadForm submit! res: ', res)
+            this.goBack()
+          })
         } else {
-          console.log('error submit!!')
+          console.log('++++ ++++ error submit! ++++ ++++')
           return false
         }
       })
@@ -140,15 +131,17 @@ export default {
       console.log(this.$refs)
       this.$refs[formName].resetFields()
     },
+    beforePicUpload(file) {
+      console.log('--- beforePicUpload', file)
+      window.URL = window.URL || window.webkitURL
+      this.deviceShapeForm.originalUrl = window.URL.createObjectURL(file)
+      this.uploadForm.append('originalUrl', file, file.name)
+      return false
+    },
+
     goBack() {
       this.$router.go(-1)
     },
-
-    beforeAvatarUpload(file) {
-      console.log('--- beforeAvatarUpload', file)
-      window.URL = window.URL || window.webkitURL
-      this.deviceShapeForm.originalUrl = window.URL.createObjectURL(file)
-    }
   }
 
 }
