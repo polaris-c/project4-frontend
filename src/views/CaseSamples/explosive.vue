@@ -22,7 +22,7 @@
         style="margin-left: 30px;" 
         @click = "handleCreate()"
         round>
-        新增样本
+        新增物证
       </el-button>
 
       <!-- 下载按钮 -->
@@ -54,20 +54,20 @@
 
       <el-table-column 
         align="center" 
-        label="sampleID" 
+        label="evidenceID" 
         fixed="left"
         width="100">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleID}}</span>
+          <span>{{scope.row.evidenceID}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sname" 
+        label="caseID" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sname}}</span>
+          <span>{{scope.row.caseID}}</span>
         </template>
       </el-table-column>
 
@@ -83,55 +83,37 @@
 
       <el-table-column 
         align="center" 
-        label="sampleState" 
+        label="eviState" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleState}}</span>
+          <span>{{scope.row.eviState}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleOrigin" 
+        label="eviMake" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleOrigin}}</span>
+          <span>{{scope.row.eviMake}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleType" 
+        label="eviDraw" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleType}}</span>
+          <span>{{scope.row.eviDraw}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleMake" 
+        label="eviAnalyse" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleMake}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column 
-        align="center" 
-        label="sampleDraw" 
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sampleDraw}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column 
-        align="center" 
-        label="sampleAnalyse" 
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sampleAnalyse}}</span>
+          <span>{{scope.row.eviAnalyse}}</span>
         </template>
       </el-table-column>
 
@@ -152,7 +134,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="dialogShowVisible = true">
+            @click="handleDetail(scope.$index, scope.row)">
             <!-- @click="handleEdit(scope.$index, scope.row)" -->
             详 细
           </el-button>
@@ -189,11 +171,21 @@
     <!-- 弹出框 详细展示 -->
     <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
 
+      <div style="margin-left: 30px;">
+        <img v-if="showExploEvisInfo.picUrl" :src="showExploEvisInfo.picUrl" class="avatar">
+      </div>
+
+      <ul>
+        <li v-for="(value, key) in showExploEvisInfo" v-if="key !== 'picUrl' ">
+          <!-- && key !== 'exploSampleFile' -->
+          {{ key }}: {{ value }}
+        </li>
+      </ul>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleDownload()">导出</el-button>
         <el-button type="" @click="dialogShowVisible = false">返回</el-button>
       </div>
-
     </el-dialog>
 
     <!-- 弹出框 编辑功能 -->
@@ -205,12 +197,12 @@
         ref="explosiveCaseSamplesComponent"
         label-width="100px" >
 
-        <el-form-item label="样品名称" prop="sname">
-          <el-input v-model="explosiveCaseSamplesForm.sname" clearable></el-input>
+        <el-form-item label="物证名称" prop="caseID">
+          <el-input v-model="explosiveCaseSamplesForm.caseID" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样本编号" prop="sampleID">
-          <el-input v-model="explosiveCaseSamplesForm.sampleID" clearable></el-input>
+        <el-form-item label="物证编号" prop="evidenceID">
+          <el-input v-model="explosiveCaseSamplesForm.evidenceID" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="处理人员编号" prop="user_id">
@@ -227,28 +219,20 @@
           <!-- {{ explosiveCaseSamplesForm.inputDate }} -->
         </el-form-item>
 
-        <el-form-item label="样品状态" prop="sampleState">
-          <el-input v-model="explosiveCaseSamplesForm.sampleState" clearable></el-input>
+        <el-form-item label="物证状态" prop="eviState">
+          <el-input v-model="explosiveCaseSamplesForm.eviState" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样品产地" prop="sampleOrigin">
-          <el-input v-model="explosiveCaseSamplesForm.sampleOrigin" clearable></el-input>
+        <el-form-item label="物证制备方法" prop="eviMake">
+          <el-input v-model="explosiveCaseSamplesForm.eviMake" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样品种类" prop="sampleType">
-          <el-input v-model="explosiveCaseSamplesForm.sampleType" clearable></el-input>
+        <el-form-item label="物证提取方法" prop="eviDraw">
+          <el-input v-model="explosiveCaseSamplesForm.eviDraw" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样品制备方法" prop="sampleMake">
-          <el-input v-model="explosiveCaseSamplesForm.sampleMake" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="样品提取方法" prop="sampleDraw">
-          <el-input v-model="explosiveCaseSamplesForm.sampleDraw" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="样品分析方法" prop="sampleAnalyse">
-          <el-input v-model="explosiveCaseSamplesForm.sampleAnalyse" clearable></el-input>
+        <el-form-item label="物证分析方法" prop="eviAnalyse">
+          <el-input v-model="explosiveCaseSamplesForm.eviAnalyse" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="分析条件" prop="analyseCondition">
@@ -259,7 +243,7 @@
           <el-input v-model="explosiveCaseSamplesForm.picDescrip" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样本图片" prop="picUrl">
+        <el-form-item label="物证图片" prop="picUrl">
           <el-upload 
             class=""
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -288,7 +272,7 @@
 </template>
 
 <script>
-import { getDataList, updateData } from '@/api/table'
+import { getExploEvisList, showExploEvis, updateExploEvis, deleteExploEvis } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -304,25 +288,26 @@ export default {
       currentList: [],
       currentPage: 1,
       pageSize: 10,
+      
       dialogFormVisible: false,
       dialogShowVisible: false,
 
+      showExploEvisInfo: {}, // 数据详情对象
+      uploadForm: {}, // 上传用表单数据对象
       explosiveCaseSamplesForm: {
         id: null,
-        sname: '',
-        sampleID: '',
-        user_id: '',
+        caseID: null,
+        evidenceID: null,
+        user_id: null,
         inputDate: null,
-        sampleState: '',
-        sampleOrigin: '',
-        sampleType: '',
-        sampleMake: '',
-        sampleDraw: '',
-        sampleAnalyse: '',
-        analyseCondition: '',
+        eviState: null,
+        eviMake: null,
+        eviDraw: null,
+        eviAnalyse: null,
+        analyseCondition: null,
         picUrl: null,
-        picDescrip: '',
-        note: ''
+        picDescrip: null,
+        note: null
       },
       explosiveComSamplesFile: [
         {
@@ -337,7 +322,7 @@ export default {
         }
       ],
       explosiveComSamplesRules: {
-        sname: [
+        caseID: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
@@ -356,31 +341,17 @@ export default {
     ])
   },
 
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-
   created() {
     this.fetchData()
-    // console.log('--- PersonnelManagement this.$route: ', this.$route)
-    // console.log('--- PersonnelManagement this.$router: ', this.$router)
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      getDataList(this.listQuery).then(response => {
-        this.list = response.data.items
+      getExploEvisList().then(response => {
+        this.list = response.data
         this.listLoading = false
-        this.handleCurrentChange(1)
-        // console.log('--- PersonnelManagement List: ', this.list)
+        this.handleCurrentChange(this.currentPage)
       })
     },
 
@@ -396,6 +367,13 @@ export default {
       alert('已导出！')
     },
 
+    handleDetail(index, row) {
+      showExploEvis(row.id).then(res => {
+        this.showExploEvisInfo = res.data
+      })
+      this.dialogShowVisible = true
+    },
+
     handleEdit(index, row) {
       this.explosiveCaseSamplesForm = Object.assign({}, row)
       this.explosiveCaseSamplesForm.inputDate = new Date(row.inputDate)
@@ -409,7 +387,7 @@ export default {
       this.$refs['explosiveCaseSamplesComponent'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.explosiveCaseSamplesForm)
-          updateData(tempData).then(() => {
+          updateExploEvis(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === tempData.id) {
                 const index = this.list.indexOf(v)
@@ -426,6 +404,10 @@ export default {
 
     handleDelete(index, row) {
       console.log('--- Deleted: ', index, row, this.role)
+      deleteExploEvis(row.id).then(res => {
+        console.log('--- Deleted! res: ', res)
+        this.fetchData()
+      })
     },
 
     handleDownload() {

@@ -421,6 +421,10 @@ export default {
 
     handleDelete(index, row) {
       console.log('--- Deleted: ', index, row, this.role)
+      deleteDevCompSample(row.id).then(res => {
+        console.log('--- Deleted! res: ', res)
+        this.fetchData()
+      })
     },
 
     handleDownload() {

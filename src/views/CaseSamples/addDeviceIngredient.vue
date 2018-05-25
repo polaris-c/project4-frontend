@@ -11,12 +11,12 @@
               ref="deviceIngredientComponent"
               label-width="100px" >
 
-              <el-form-item label="样品名称" prop="sname">
-                <el-input v-model="deviceIngredientForm.sname" clearable></el-input>
+              <el-form-item label="案件编号" prop="caseID">
+                <el-input v-model="deviceIngredientForm.caseID" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样本编号" prop="sampleID">
-                <el-input v-model="deviceIngredientForm.sampleID" clearable></el-input>
+              <el-form-item label="物证编号" prop="evidenceID">
+                <el-input v-model="deviceIngredientForm.evidenceID" clearable></el-input>
               </el-form-item>
 
               <el-form-item label="处理人员编号" prop="user_id">
@@ -33,28 +33,20 @@
                 <!-- {{ deviceIngredientForm.inputDate }} -->
               </el-form-item>
 
-              <el-form-item label="样品状态" prop="sampleState">
-                <el-input v-model="deviceIngredientForm.sampleState" clearable></el-input>
+              <el-form-item label="物证状态" prop="eviState">
+                <el-input v-model="deviceIngredientForm.eviState" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样品产地" prop="sampleOrigin">
-                <el-input v-model="deviceIngredientForm.sampleOrigin" clearable></el-input>
+              <el-form-item label="物证制备方法" prop="eviMake">
+                <el-input v-model="deviceIngredientForm.eviMake" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样品种类" prop="sampleType">
-                <el-input v-model="deviceIngredientForm.sampleType" clearable></el-input>
+              <el-form-item label="物证提取方法" prop="eviDraw">
+                <el-input v-model="deviceIngredientForm.eviDraw" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样品制备方法" prop="sampleMake">
-                <el-input v-model="deviceIngredientForm.sampleMake" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="样品提取方法" prop="sampleDraw">
-                <el-input v-model="deviceIngredientForm.sampleDraw" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="样品分析方法" prop="sampleAnalyse">
-                <el-input v-model="deviceIngredientForm.sampleAnalyse" clearable></el-input>
+              <el-form-item label="物证分析方法" prop="eviAnalyse">
+                <el-input v-model="deviceIngredientForm.eviAnalyse" clearable></el-input>
               </el-form-item>
 
               <el-form-item label="分析条件" prop="analyseCondition">
@@ -65,10 +57,10 @@
                 <el-input v-model="deviceIngredientForm.picDescrip" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样本图片" prop="picUrl">
+              <el-form-item label="物证图片" prop="picUrl">
                 <el-upload 
                   class=""
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action=""
                   :show-file-list="false"
                   :before-upload="beforeAvatarUpload"
                   >
@@ -82,7 +74,7 @@
               </el-form-item>
 
               <el-form-item>
-                <el-button type="warning" @click="resetForm('deviceIngredientComponent')" plain>重置样本信息</el-button>
+                <el-button type="warning" @click="resetForm('deviceIngredientComponent')" plain>重置物证信息</el-button>
               </el-form-item>
 
               <el-form-item>
@@ -96,7 +88,7 @@
 
       <!-- 右栏-文件信息 -->
         <el-col :span="10">
-          <div v-for="fileItem in explosiveComSamplesFile" :key="fileItem.key">
+          <div v-for="fileItem in deviceIngredientFile" :key="fileItem.key">
 
             <el-form 
               :model="fileItem"
@@ -134,9 +126,10 @@
                   class=""
                   action=""
                   :limit="1"
-                  :file-list="explosiveComSamplesFile.docUrl"
+                  :file-list="deviceIngredientFile.docUrl"
+                  :before-upload="beforeFileUpload"
                   >
-                  <el-button size="small" type="primary">点击上传</el-button>
+                  <el-button size="small" type="primary" @click="recordKey(fileItem)">点击上传</el-button>
                 </el-upload>
               </el-form-item>
 
@@ -159,6 +152,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { addDevCompEvis, addDevCompEviFiles } from '@/api/create'
 
 export default {
   name: 'addDeviceIngredient',
@@ -171,28 +165,27 @@ export default {
 
   data() {
     return {
+      uploadForm: {}, // 上传基本信息用表单数据对象
       deviceIngredientForm: {
-        sname: '',
-        sampleID: '',
-        user_id: '',
+        caseID: null,
+        evidenceID: null,
+        user_id: null,
         inputDate: null,
-        sampleState: '',
-        sampleOrigin: '',
-        sampleType: '',
-        sampleMake: '',
-        sampleDraw: '',
-        sampleAnalyse: '',
-        analyseCondition: '',
+        eviState: null,
+        eviMake: null,
+        eviDraw: null,
+        eviAnalyse: null,
+        analyseCondition: null,
         picUrl: null,
-        picDescrip: '',
-        note: ''
+        picDescrip: null,
+        note: null
       },
-      explosiveComSamplesFile: [
+      uploadFileIndex: -1, // 上传数据文件时记录数据文件信息号
+      uploadFileForm: [], // 上传数据文件信息用表单数据对象
+      deviceIngredientFile: [
         {
-          user_id: '',
-          inputDate: null,
-          detectDevice: '',
-          detectMrfs: '',
+          detectDevice: null,
+          detectMrfs: null,
           detectType: null,
           docType: null,
           docUrl: null,
@@ -212,54 +205,98 @@ export default {
   },
 
   watch: {
-    explosiveComSamplesFile: function() {
-      // console.log(this.explosiveComSamplesFile)
+    deviceIngredientFile: function() {
+      // console.log(this.deviceIngredientFile)
     }
   },
 
   mounted() {
     this.deviceIngredientForm.inputDate = new Date()
     this.deviceIngredientForm.user_id = this.name
+    this.uploadForm = new FormData()
+    let formData = new FormData()
+    this.uploadFileForm.push(formData)
   },
 
   methods: {
+    /* 提交物证基本信息 */
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      console.log(' --- submitForm: ', formName)
+      this.$refs[formName].validate(valid => {
+        console.log(' --- submitForm: ', this.$refs)
         if (valid) {
-          alert('submit!')
+          this.uploadForm.append('caseID', this.deviceIngredientForm.caseID)
+          this.uploadForm.append('evidenceID', this.deviceIngredientForm.evidenceID)
+          this.uploadForm.append('user_id', this.deviceIngredientForm.user_id)
+          this.uploadForm.append('inputDate', this.deviceIngredientForm.inputDate)
+          this.uploadForm.append('eviState', this.deviceIngredientForm.eviState)
+          this.uploadForm.append('eviMake', this.deviceIngredientForm.eviMake)
+          this.uploadForm.append('eviDraw', this.deviceIngredientForm.eviDraw)
+          this.uploadForm.append('eviAnalyse', this.deviceIngredientForm.eviAnalyse)
+          this.uploadForm.append('analyseCondition', this.deviceIngredientForm.analyseCondition)
+          this.uploadForm.append('picDescrip', this.deviceIngredientForm.picDescrip)
+          this.uploadForm.append('note', this.deviceIngredientForm.note)
+          console.log(' --- submitForm: ', this.uploadForm)
+          addDevCompEvis(this.uploadForm).then(res => {
+            console.log('uploadForm submit! res: ', res)
+            this.submitFiles(res.data.id)
+          })
         } else {
-          console.log('error submit!!')
+          console.log('++++ ++++ error submit! ++++ ++++')
           return false
         }
       })
     },
+
+    /* 提交物证数据文件 */
+    submitFiles(id) {
+      for (const i in this.$refs.fileItems) {
+        this.$refs.fileItems[i].validate(valid => {
+          if(valid) {
+            this.uploadFileForm[i].append('devCompEvi', id) 
+            this.uploadFileForm[i].append('detectDevice', this.deviceIngredientFile[i].detectDevice) 
+            this.uploadFileForm[i].append('detectMrfs', this.deviceIngredientFile[i].detectMrfs) 
+            this.uploadFileForm[i].append('detectType', this.deviceIngredientFile[i].detectType) 
+            this.uploadFileForm[i].append('docType', this.deviceIngredientFile[i].docType) 
+            addDevCompEviFiles(this.uploadFileForm[i]).then(res => {
+              console.log('uploadFileForm submit! res: ', res)
+            })
+          } else {
+            console.log('++++ ++++ error submitFiles! ++++ ++++')
+            return false
+          }
+        })
+      }
+      this.goBack()
+    },
+
+    /* 物证基本信息表单操作 */
     resetForm(formName) {
       console.log(this.$refs)
       this.$refs[formName].resetFields()
     },
-    goBack() {
-      this.$router.go(-1)
-    },
-
     beforeAvatarUpload(file) {
       console.log('--- beforeAvatarUpload', file)
       window.URL = window.URL || window.webkitURL
       this.deviceIngredientForm.picUrl = window.URL.createObjectURL(file)
+      this.uploadForm.append('picUrl', file, file.name)
+      return false
     },
 
+    /* 物证文件信息表单操作 */
     addFile() {
-      this.explosiveComSamplesFile.push(
+      this.deviceIngredientFile.push(
         {
-          user_id: '',
-          inputDate: null,
-          detectDevice: '',
-          detectMrfs: '',
+          detectDevice: null,
+          detectMrfs: null,
           detectType: null,
           docType: null,
           docUrl: null,
           key: Date.now()
         }
       )
+      let formData = new FormData()
+      this.uploadFileForm.push(formData)
     },
     resetFile(fileKey) {
       // console.log(fileKey, this.$refs)
@@ -271,9 +308,26 @@ export default {
       }
     },
     removeFile(fileItem) {
-      const fileIndex = this.explosiveComSamplesFile.indexOf(fileItem)
-      this.explosiveComSamplesFile.splice(fileIndex, 1)
-    }
+      const fileIndex = this.deviceIngredientFile.indexOf(fileItem)
+      this.deviceIngredientFile.splice(fileIndex, 1)
+      this.uploadFileForm.splice(fileIndex, 1)
+    },
+    recordKey(fileItem) {
+      this.uploadFileIndex = this.deviceIngredientFile.indexOf(fileItem)
+      console.log('--- recordKey uploadFileIndex', this.uploadFileIndex)
+    },
+    beforeFileUpload(file) {
+      console.log('--- beforeFileUpload uploadFileIndex', this.uploadFileIndex)
+      if(this.uploadFileIndex >= 0) {
+        this.uploadFileForm[this.uploadFileIndex].append('docUrl', file, file.name)
+      } else {
+        console.log('++++ ++++ error beforeFileUpload! ++++ ++++')
+      }
+      return false
+    },
+    goBack() {
+      this.$router.go(-1)
+    },
   }
 
 }

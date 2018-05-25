@@ -240,7 +240,6 @@ export default {
   },
 
   methods: {
-
     /* 提交样本基本信息 */
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -280,6 +279,7 @@ export default {
             this.uploadFileForm[i].append('detectMrfs', this.explosiveComSamplesFile[i].detectMrfs) 
             this.uploadFileForm[i].append('detectType', this.explosiveComSamplesFile[i].detectType) 
             this.uploadFileForm[i].append('docType', this.explosiveComSamplesFile[i].docType) 
+            
             addExploSampleFiles(this.uploadFileForm[i]).then(res => {
               console.log('uploadFileForm submit! res: ', res)
             })

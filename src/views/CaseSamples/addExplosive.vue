@@ -2,7 +2,7 @@
   <div class="dashboard-container">
 
     <el-row :gutter="50">
-      <!-- 左栏-样本信息 -->
+      <!-- 左栏-物证信息 -->
         <el-col :span="10">
           <div>
             <el-form
@@ -11,12 +11,12 @@
               ref="explosiveCaseSamplesComponent"
               label-width="100px" >
 
-              <el-form-item label="样品名称" prop="sname">
-                <el-input v-model="explosiveCaseSamplesForm.sname" clearable></el-input>
+              <el-form-item label="案件编号" prop="caseID">
+                <el-input v-model="explosiveCaseSamplesForm.caseID" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样本编号" prop="sampleID">
-                <el-input v-model="explosiveCaseSamplesForm.sampleID" clearable></el-input>
+              <el-form-item label="物证编号" prop="evidenceID">
+                <el-input v-model="explosiveCaseSamplesForm.evidenceID" clearable></el-input>
               </el-form-item>
 
               <el-form-item label="处理人员编号" prop="user_id">
@@ -33,28 +33,20 @@
                 <!-- {{ explosiveCaseSamplesForm.inputDate }} -->
               </el-form-item>
 
-              <el-form-item label="样品状态" prop="sampleState">
-                <el-input v-model="explosiveCaseSamplesForm.sampleState" clearable></el-input>
+              <el-form-item label="物证状态" prop="eviState">
+                <el-input v-model="explosiveCaseSamplesForm.eviState" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样品产地" prop="sampleOrigin">
-                <el-input v-model="explosiveCaseSamplesForm.sampleOrigin" clearable></el-input>
+              <el-form-item label="物证制备方法" prop="eviMake">
+                <el-input v-model="explosiveCaseSamplesForm.eviMake" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样品种类" prop="sampleType">
-                <el-input v-model="explosiveCaseSamplesForm.sampleType" clearable></el-input>
+              <el-form-item label="物证提取方法" prop="eviDraw">
+                <el-input v-model="explosiveCaseSamplesForm.eviDraw" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样品制备方法" prop="sampleMake">
-                <el-input v-model="explosiveCaseSamplesForm.sampleMake" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="样品提取方法" prop="sampleDraw">
-                <el-input v-model="explosiveCaseSamplesForm.sampleDraw" clearable></el-input>
-              </el-form-item>
-
-              <el-form-item label="样品分析方法" prop="sampleAnalyse">
-                <el-input v-model="explosiveCaseSamplesForm.sampleAnalyse" clearable></el-input>
+              <el-form-item label="物证分析方法" prop="eviAnalyse">
+                <el-input v-model="explosiveCaseSamplesForm.eviAnalyse" clearable></el-input>
               </el-form-item>
 
               <el-form-item label="分析条件" prop="analyseCondition">
@@ -65,10 +57,10 @@
                 <el-input v-model="explosiveCaseSamplesForm.picDescrip" clearable></el-input>
               </el-form-item>
 
-              <el-form-item label="样本图片" prop="picUrl">
+              <el-form-item label="物证图片" prop="picUrl">
                 <el-upload 
                   class=""
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action=""
                   :show-file-list="false"
                   :before-upload="beforeAvatarUpload"
                   >
@@ -82,7 +74,7 @@
               </el-form-item>
 
               <el-form-item>
-                <el-button type="warning" @click="resetForm('explosiveCaseSamplesComponent')" plain>重置样本信息</el-button>
+                <el-button type="warning" @click="resetForm('explosiveCaseSamplesComponent')" plain>重置物证信息</el-button>
               </el-form-item>
 
               <el-form-item>
@@ -96,7 +88,7 @@
 
       <!-- 右栏-文件信息 -->
         <el-col :span="10">
-          <div v-for="fileItem in explosiveComSamplesFile" :key="fileItem.key">
+          <div v-for="fileItem in explosiveCaseSamplesFile" :key="fileItem.key">
 
             <el-form 
               :model="fileItem"
@@ -134,9 +126,10 @@
                   class=""
                   action=""
                   :limit="1"
-                  :file-list="explosiveComSamplesFile.docUrl"
+                  :file-list="explosiveCaseSamplesFile.docUrl"
+                  :before-upload="beforeFileUpload"
                   >
-                  <el-button size="small" type="primary">点击上传</el-button>
+                  <el-button size="small" type="primary" @click="recordKey(fileItem)">点击上传</el-button>
                 </el-upload>
               </el-form-item>
 
@@ -159,6 +152,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { addExploEvis, addExploEviFiles } from '@/api/create'
 
 export default {
   name: 'addExplosiveComSamples',
@@ -171,28 +165,27 @@ export default {
 
   data() {
     return {
+      uploadForm: {}, // 上传基本信息用表单数据对象
       explosiveCaseSamplesForm: {
-        sname: '',
-        sampleID: '',
-        user_id: '',
+        caseID: null,
+        evidenceID: null,
+        user_id: null,
         inputDate: null,
-        sampleState: '',
-        sampleOrigin: '',
-        sampleType: '',
-        sampleMake: '',
-        sampleDraw: '',
-        sampleAnalyse: '',
-        analyseCondition: '',
+        eviState: null,
+        eviMake: null,
+        eviDraw: null,
+        eviAnalyse: null,
+        analyseCondition: null,
         picUrl: null,
-        picDescrip: '',
-        note: ''
+        picDescrip: null,
+        note: null
       },
-      explosiveComSamplesFile: [
+      uploadFileIndex: -1, // 上传数据文件时记录数据文件信息号
+      uploadFileForm: [], // 上传数据文件信息用表单数据对象
+      explosiveCaseSamplesFile: [
         {
-          user_id: '',
-          inputDate: null,
-          detectDevice: '',
-          detectMrfs: '',
+          detectDevice: null,
+          detectMrfs: null,
           detectType: null,
           docType: null,
           docUrl: null,
@@ -200,9 +193,9 @@ export default {
         }
       ],
       explosiveComSamplesRules: {
-        sname: [
+        caseID: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
         ],
         inputDate: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
@@ -212,54 +205,96 @@ export default {
   },
 
   watch: {
-    explosiveComSamplesFile: function() {
-      // console.log(this.explosiveComSamplesFile)
+    explosiveCaseSamplesFile: function() {
+      // console.log(this.explosiveCaseSamplesFile)
     }
   },
 
   mounted() {
     this.explosiveCaseSamplesForm.inputDate = new Date()
     this.explosiveCaseSamplesForm.user_id = this.name
+    this.uploadForm = new FormData()
+    let formData = new FormData()
+    this.uploadFileForm.push(formData)
   },
 
   methods: {
+    /* 提交物证基本信息 */
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          alert('submit!')
+          this.uploadForm.append('caseID', this.explosiveCaseSamplesForm.caseID)
+          this.uploadForm.append('evidenceID', this.explosiveCaseSamplesForm.evidenceID)
+          this.uploadForm.append('user_id', this.explosiveCaseSamplesForm.user_id)
+          this.uploadForm.append('inputDate', this.explosiveCaseSamplesForm.inputDate)
+          this.uploadForm.append('eviState', this.explosiveCaseSamplesForm.eviState)
+          this.uploadForm.append('eviMake', this.explosiveCaseSamplesForm.eviMake)
+          this.uploadForm.append('eviDraw', this.explosiveCaseSamplesForm.eviDraw)
+          this.uploadForm.append('eviAnalyse', this.explosiveCaseSamplesForm.eviAnalyse)
+          this.uploadForm.append('analyseCondition', this.explosiveCaseSamplesForm.analyseCondition)
+          this.uploadForm.append('picDescrip', this.explosiveCaseSamplesForm.picDescrip)
+          this.uploadForm.append('note', this.explosiveCaseSamplesForm.note)
+
+          addExploEvis(this.uploadForm).then(res => {
+            console.log('uploadForm submit! res: ', res)
+            this.submitFiles(res.data.id)
+          })
         } else {
-          console.log('error submit!!')
+          console.log('++++ ++++ error submit! ++++ ++++')
           return false
         }
       })
     },
+
+    /* 提交物证数据文件 */
+    submitFiles(id) {
+      for (const i in this.$refs.fileItems) {
+        this.$refs.fileItems[i].validate(valid => {
+          if(valid) {
+            this.uploadFileForm[i].append('exploEvi', id) 
+            this.uploadFileForm[i].append('detectDevice', this.explosiveCaseSamplesFile[i].detectDevice) 
+            this.uploadFileForm[i].append('detectMrfs', this.explosiveCaseSamplesFile[i].detectMrfs) 
+            this.uploadFileForm[i].append('detectType', this.explosiveCaseSamplesFile[i].detectType) 
+            this.uploadFileForm[i].append('docType', this.explosiveCaseSamplesFile[i].docType) 
+            addExploEviFiles(this.uploadFileForm[i]).then(res => {
+              console.log('uploadFileForm submit! res: ', res)
+            })
+          } else {
+            console.log('++++ ++++ error submitFiles! ++++ ++++')
+            return false
+          }
+        })
+      }
+      this.goBack()
+    },
+
+    /* 物证基本信息表单操作 */
     resetForm(formName) {
       console.log(this.$refs)
       this.$refs[formName].resetFields()
     },
-    goBack() {
-      this.$router.go(-1)
-    },
-
     beforeAvatarUpload(file) {
       console.log('--- beforeAvatarUpload', file)
       window.URL = window.URL || window.webkitURL
       this.explosiveCaseSamplesForm.picUrl = window.URL.createObjectURL(file)
+      this.uploadForm.append('picUrl', file, file.name)
+      return false
     },
 
+    /* 物证文件信息表单操作 */
     addFile() {
-      this.explosiveComSamplesFile.push(
+      this.explosiveCaseSamplesFile.push(
         {
-          user_id: '',
-          inputDate: null,
-          detectDevice: '',
-          detectMrfs: '',
+          detectDevice: null,
+          detectMrfs: null,
           detectType: null,
           docType: null,
           docUrl: null,
           key: Date.now()
         }
       )
+      let formData = new FormData()
+      this.uploadFileForm.push(formData)
     },
     resetFile(fileKey) {
       // console.log(fileKey, this.$refs)
@@ -271,9 +306,27 @@ export default {
       }
     },
     removeFile(fileItem) {
-      const fileIndex = this.explosiveComSamplesFile.indexOf(fileItem)
-      this.explosiveComSamplesFile.splice(fileIndex, 1)
-    }
+      const fileIndex = this.explosiveCaseSamplesFile.indexOf(fileItem)
+      this.explosiveCaseSamplesFile.splice(fileIndex, 1)
+      this.uploadFileForm.splice(fileIndex, 1)
+    },
+    recordKey(fileItem) {
+      this.uploadFileIndex = this.explosiveCaseSamplesFile.indexOf(fileItem)
+      console.log('--- recordKey uploadFileIndex', this.uploadFileIndex)
+    },
+    beforeFileUpload(file) {
+      console.log('--- beforeFileUpload uploadFileIndex', this.uploadFileIndex)
+      if(this.uploadFileIndex >= 0) {
+        this.uploadFileForm[this.uploadFileIndex].append('docUrl', file, file.name)
+      } else {
+        console.log('++++ ++++ error beforeFileUpload! ++++ ++++')
+      }
+      return false
+    },
+
+    goBack() {
+      this.$router.go(-1)
+    },
   }
 
 }

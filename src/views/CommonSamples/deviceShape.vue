@@ -384,6 +384,10 @@ export default {
 
     handleDelete(index, row) {
       console.log(' --- handleDelete: ', index, row)
+      deleteDevShapeSample(row.id).then(res => {
+        console.log('--- Deleted! res: ', res)
+        this.fetchData()
+      })
     },
 
     handleSizeChange(newPageSize) {

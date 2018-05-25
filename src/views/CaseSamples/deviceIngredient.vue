@@ -54,20 +54,20 @@
 
       <el-table-column 
         align="center" 
-        label="sampleID" 
+        label="evidenceID " 
         fixed="left"
         width="100">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleID}}</span>
+          <span>{{scope.row.evidenceID }}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sname" 
+        label="caseID" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sname}}</span>
+          <span>{{scope.row.caseID}}</span>
         </template>
       </el-table-column>
 
@@ -83,55 +83,37 @@
 
       <el-table-column 
         align="center" 
-        label="sampleState" 
+        label="eviState" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleState}}</span>
+          <span>{{scope.row.eviState}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleOrigin" 
+        label="eviMake" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleOrigin}}</span>
+          <span>{{scope.row.eviMake}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleType" 
+        label="eviDraw" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleType}}</span>
+          <span>{{scope.row.eviDraw}}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="sampleMake" 
+        label="eviAnalyse" 
         width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.sampleMake}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column 
-        align="center" 
-        label="sampleDraw" 
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sampleDraw}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column 
-        align="center" 
-        label="sampleAnalyse" 
-        width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.sampleAnalyse}}</span>
+          <span>{{scope.row.eviAnalyse}}</span>
         </template>
       </el-table-column>
 
@@ -152,8 +134,8 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="dialogShowVisible = true">
-            <!-- @click="handleEdit(scope.$index, scope.row)" -->
+            @click="handleDetail(scope.$index, scope.row)">
+            <!-- @click="handleDetail(scope.$index, scope.row)" -->
             详 细
           </el-button>
           <el-button
@@ -189,6 +171,17 @@
     <!-- 弹出框 详细展示 -->
     <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
 
+      <div style="margin-left: 30px;">
+        <img v-if="showDevCompEvisInfo.picUrl" :src="showDevCompEvisInfo.picUrl" class="avatar">
+      </div>
+
+      <ul>
+        <li v-for="(value, key) in showDevCompEvisInfo" v-if="key !== 'picUrl' ">
+          <!-- && key !== 'exploSampleFile' -->
+          {{ key }}: {{ value }}
+        </li>
+      </ul>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleDownload()">导出</el-button>
         <el-button type="" @click="dialogShowVisible = false">返回</el-button>
@@ -205,12 +198,12 @@
         ref="deviceIngredientComponent"
         label-width="100px" >
 
-        <el-form-item label="样品名称" prop="sname">
-          <el-input v-model="deviceIngredientForm.sname" clearable></el-input>
+        <el-form-item label="样品名称" prop="caseID">
+          <el-input v-model="deviceIngredientForm.caseID" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样本编号" prop="sampleID">
-          <el-input v-model="deviceIngredientForm.sampleID" clearable></el-input>
+        <el-form-item label="样本编号" prop="evidenceID ">
+          <el-input v-model="deviceIngredientForm.evidenceID " clearable></el-input>
         </el-form-item>
 
         <el-form-item label="处理人员编号" prop="user_id">
@@ -227,28 +220,20 @@
           <!-- {{ deviceIngredientForm.inputDate }} -->
         </el-form-item>
 
-        <el-form-item label="样品状态" prop="sampleState">
-          <el-input v-model="deviceIngredientForm.sampleState" clearable></el-input>
+        <el-form-item label="样品状态" prop="eviState">
+          <el-input v-model="deviceIngredientForm.eviState" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样品产地" prop="sampleOrigin">
-          <el-input v-model="deviceIngredientForm.sampleOrigin" clearable></el-input>
+        <el-form-item label="样品制备方法" prop="eviMake">
+          <el-input v-model="deviceIngredientForm.eviMake" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样品种类" prop="sampleType">
-          <el-input v-model="deviceIngredientForm.sampleType" clearable></el-input>
+        <el-form-item label="样品提取方法" prop="eviDraw">
+          <el-input v-model="deviceIngredientForm.eviDraw" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="样品制备方法" prop="sampleMake">
-          <el-input v-model="deviceIngredientForm.sampleMake" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="样品提取方法" prop="sampleDraw">
-          <el-input v-model="deviceIngredientForm.sampleDraw" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="样品分析方法" prop="sampleAnalyse">
-          <el-input v-model="deviceIngredientForm.sampleAnalyse" clearable></el-input>
+        <el-form-item label="样品分析方法" prop="eviAnalyse">
+          <el-input v-model="deviceIngredientForm.eviAnalyse" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="分析条件" prop="analyseCondition">
@@ -288,7 +273,7 @@
 </template>
 
 <script>
-import { getDataList, updateData } from '@/api/table'
+import { getDevCompEvisList, showDevCompEvis, updateDevCompEvis, deleteDevCompEvis } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -304,40 +289,29 @@ export default {
       currentList: [],
       currentPage: 1,
       pageSize: 10,
+
       dialogFormVisible: false,
       dialogShowVisible: false,
 
+      showDevCompEvisInfo: {}, // 数据详情对象
+      uploadForm: {}, // 上传用表单数据对象
       deviceIngredientForm: {
         id: null,
-        sname: '',
-        sampleID: '',
-        user_id: '',
+        caseID: null,
+        evidenceID: null,
+        user_id: null,
         inputDate: null,
-        sampleState: '',
-        sampleOrigin: '',
-        sampleType: '',
-        sampleMake: '',
-        sampleDraw: '',
-        sampleAnalyse: '',
-        analyseCondition: '',
+        eviState: null,
+        eviMake: null,
+        eviDraw: null,
+        eviAnalyse: null,
+        analyseCondition: null,
         picUrl: null,
-        picDescrip: '',
-        note: ''
+        picDescrip: null,
+        note: null
       },
-      explosiveComSamplesFile: [
-        {
-          user_id: '',
-          inputDate: null,
-          detectDevice: '',
-          detectMrfs: '',
-          detectType: null,
-          docType: null,
-          docUrl: null,
-          key: Date.now()
-        }
-      ],
       explosiveComSamplesRules: {
-        sname: [
+        caseID: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
@@ -355,31 +329,17 @@ export default {
     ])
   },
 
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-
   created() {
     this.fetchData()
-    // console.log('--- PersonnelManagement this.$route: ', this.$route)
-    // console.log('--- PersonnelManagement this.$router: ', this.$router)
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      getDataList(this.listQuery).then(response => {
-        this.list = response.data.items
+      getDevCompEvisList().then(response => {
+        this.list = response.data
         this.listLoading = false
-        this.handleCurrentChange(1)
-        // console.log('--- PersonnelManagement List: ', this.list)
+        this.handleCurrentChange(this.currentPage)
       })
     },
 
@@ -393,6 +353,13 @@ export default {
 
     handleDownloadList() {
       alert('已导出！')
+    },
+
+    handleDetail(index, row) {
+      showDevCompEvis(row.id).then(res => {
+        this.showDevCompEvisInfo = res.data
+      })
+      this.dialogShowVisible = true
     },
 
     handleEdit(index, row) {
@@ -409,7 +376,7 @@ export default {
         if (valid) {
           const tempdata = Object.assign({}, this.deviceIngredientForm)
 
-          updateData(tempdata).then(() => {
+          updateDevCompEvis(tempdata).then(() => {
             for (const v of this.list) {
               if (v.id === tempdata.id) {
                 const index = this.list.indexOf(v)
@@ -426,6 +393,10 @@ export default {
 
     handleDelete(index, row) {
       console.log('--- Deleted: ', index, row, this.role)
+      deleteDevCompEvis(row.id).then(res => {
+        console.log('--- Deleted! res: ', res)
+        this.fetchData()
+      })
     },
 
     handleDownload() {
