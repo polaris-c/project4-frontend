@@ -341,7 +341,7 @@ export default {
       explosiveComSamplesRules: {
         sname: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
         ]
       },
       formLabelWidth: '120px'
