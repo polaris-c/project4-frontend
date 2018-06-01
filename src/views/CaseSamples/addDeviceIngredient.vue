@@ -107,9 +107,9 @@
                 <el-select v-model="fileItem.detectType" placeholder="请选择数据类型">
                   <el-option label="FTIR" value="1"></el-option>
                   <el-option label="Raman" value="2"></el-option>
-                  <el-option label="GC-MS" value="3"></el-option>
-                  <el-option label="XRD" value="4"></el-option>
-                  <el-option label="XRF" value="5"></el-option>
+                  <el-option label="XRD" value="3"></el-option>
+                  <el-option label="XRF" value="4"></el-option>
+                  <el-option label="GC-MS" value="5"></el-option>
                 </el-select>
               </el-form-item>
 

@@ -175,7 +175,7 @@ export default {
         ],
         name: [
           { required: true, message: '请输入人员姓名', trigger: 'blur' },
-          { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' }
+          { min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur' }
         ],
         password: [
           { validator: validatePassword, required: true, trigger: 'blur' }
