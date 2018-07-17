@@ -25,6 +25,15 @@
         新增样本
       </el-button>
 
+      <!-- 更新按钮 -->
+      <el-button 
+        type="success" 
+        style="margin-left: 20px;"
+        @click="updateMatch()"
+        round>
+        更新结果
+      </el-button>
+
       <!-- 下载按钮 -->
       <el-button 
         type="" 
@@ -298,7 +307,7 @@
 </template>
 
 <script>
-import { getDevCompSampleList, showDevCompSample, updateDevCompSample, deleteDevCompSample } from '@/api/table'
+import { getDevCompSampleList, showDevCompSample, updateDevCompSample, deleteDevCompSample, updateDevCompMatch } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -376,6 +385,17 @@ export default {
 
     handleCreate() {
       this.$router.push('/CommonSamples/addDeviceIngredient')
+    },
+
+    updateMatch() {
+      updateDevCompMatch().then(res => {
+        this.$notify({
+          title: '通知',
+          message: '已更新爆炸装置成分匹配结果',
+          type: 'success',
+          duration: 10000
+        });
+      })
     },
 
     handleDownloadList() {

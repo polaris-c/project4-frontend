@@ -65,6 +65,13 @@ export function deleteExploSample(id) {
   })
 }
 
+export function updateExploMatch() {
+  return service({
+    url: '/updateExploMatch/',
+    method: 'get',
+  })
+}
+
 /* 爆炸装置成分 */
 export function getDevCompSampleList(params) {
   return service({
@@ -96,6 +103,13 @@ export function deleteDevCompSample(id) {
   })
 }
 
+export function updateDevCompMatch() {
+  return service({
+    url: '/updateDevCompMatch/',
+    method: 'get',
+  })
+}
+
 /* 爆炸装置形态 */
 export function getDevShapeSampleList(params) {
   return service({
@@ -124,6 +138,13 @@ export function deleteDevShapeSample(id) {
   return service({
     url: '/devShapeSamples/' + id + '/',
     method: 'delete',
+  })
+}
+
+export function updateDevShapeMatch() {
+  return service({
+    url: '/updateDevShapeMatch/',
+    method: 'get',
   })
 }
 

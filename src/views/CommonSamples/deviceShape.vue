@@ -25,6 +25,15 @@
         新增样本
       </el-button>
 
+      <!-- 更新按钮 -->
+      <el-button 
+        type="success" 
+        style="margin-left: 20px;"
+        @click="updateMatch()"
+        round>
+        更新结果
+      </el-button>
+
       <!-- 下载按钮 -->
       <el-button
         style="margin-left:20px"
@@ -272,7 +281,7 @@
 </template>
 
 <script>
-import { getDevShapeSampleList, showDevShapeSample, updateDevShapeSample, deleteDevShapeSample } from '@/api/table'
+import { getDevShapeSampleList, showDevShapeSample, updateDevShapeSample, deleteDevShapeSample, updateDevShapeMatch } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -337,6 +346,17 @@ export default {
 
     handleCreate() {
       this.$router.push('/CommonSamples/addDeviceShape')
+    },
+
+    updateMatch() {
+      updateDevShapeMatch().then(res => {
+        this.$notify({
+          title: '通知',
+          message: '已更新爆炸装置形态匹配结果',
+          type: 'success',
+          duration: 10000
+        });
+      })
     },
 
     handleDownloadList() {

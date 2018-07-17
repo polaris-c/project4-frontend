@@ -25,6 +25,15 @@
         新增样本
       </el-button>
 
+      <!-- 更新按钮 -->
+      <el-button 
+        type="success" 
+        style="margin-left: 20px;"
+        @click="updateMatch()"
+        round>
+        更新结果
+      </el-button>
+
       <!-- 下载按钮 -->
       <el-button 
         type="" 
@@ -299,7 +308,7 @@
 </template>
 
 <script>
-import { getExploSampleList, showExploSample, deleteExploSample, updateExploSample } from '@/api/table'
+import { getExploSampleList, showExploSample, deleteExploSample, updateExploSample, updateExploMatch } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -374,6 +383,17 @@ export default {
 
     handleCreate() {
       this.$router.push('/CommonSamples/addExplosive')
+    },
+
+    updateMatch() {
+      updateExploMatch().then(res => {
+        this.$notify({
+          title: '通知',
+          message: '已更新炸药和原材料匹配结果',
+          type: 'success',
+          duration: 10000
+        });
+      })
     },
 
     handleDownloadList() {
