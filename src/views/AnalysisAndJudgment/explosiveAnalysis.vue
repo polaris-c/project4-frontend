@@ -8,20 +8,20 @@
           <el-table
             :data="matchDataItems"
             border fit highlight-current-row stripe
-            style="width: 1051px; margin-top: 10px;">
+            style="width: 1101px; margin-top: 10px;">
 
             <el-table-column
-              prop="exploEvi_id"
-              label="exploEvi_id"
+              prop="exploEvi.evidenceID"
+              label="exploEvi_evidenceID"
               align="center"
-              width="150">
+              width="180">
             </el-table-column>
 
             <el-table-column
-              prop="exploSample_id"
-              label="exploSample_id"
+              prop="exploSample.sname"
+              label="exploSample_sname"
               align="center"
-              width="150">
+              width="180">
             </el-table-column>
 
             <el-table-column
@@ -368,7 +368,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getExlpoMatch } from '@/api/table'
+import { exploMatchs } from '@/api/analysis'
 import Highcharts from 'highcharts/highstock';
 import HighchartsMore from 'highcharts/highcharts-more';
 HighchartsMore(Highcharts)
@@ -384,6 +384,7 @@ export default {
 
   data() {
     return {
+      allMatchData: null,
       matchDataItems: [],
       drawChartFlag: false,
       drawExploSampleID: null,
@@ -397,9 +398,23 @@ export default {
 
   methods: {
     fetchData() {
-      getExlpoMatch().then(response => {
-        this.matchDataItems = response.data
+      let id = this.$route.params.id
+      console.log('---- fetchData this.$route.params.id', id)
+      exploMatchs().then(response => {
+        this.allMatchData = response.data
+        this.matchDataItems = this.allMatchData.filter((matchItem) => {
+          console.log('---- filterMatchData matchItem.exploEvi.id', matchItem.exploEvi.id)
+          return matchItem.exploEvi.id == this.$route.params.id
+        })
       })
+    },
+
+    filterMatchData(matchItem) {
+      console.log('---- filterMatchData matchItem.exploEvi.id', matchItem.exploEvi.id)
+      if(matchItem.exploEvi.id === this.$route.params.id)
+        return true
+      else
+        return false
     },
 
     handleClick(tab, event) {

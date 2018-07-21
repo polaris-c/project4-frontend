@@ -218,8 +218,9 @@ export default {
     },
 
     analysis(index, row) {
-      console.log('--- analysis: ', index, row, this.role)
-      this.$router.push('/AnalysisAndJudgment/explosiveAnalysis')
+      console.log('--- analysis: ', index, row.id, this.role)
+      let id = row.id
+      this.$router.push(`/AnalysisAndJudgment/explosiveAnalysis/${id}`)
     },
 
     handleDownload() {

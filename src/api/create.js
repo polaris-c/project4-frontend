@@ -1,6 +1,6 @@
 import service from '@/utils/request'
 
-/* -------- 人员管理 -------- -------- -------- */
+/* -------- -------- -------- 人员管理 -------- -------- -------- */
 export function addPeople(data) {
   return service({
     url: '/users/',
@@ -9,7 +9,7 @@ export function addPeople(data) {
   })
 }
 
-/* -------- 常见样本 -------- -------- -------- */
+/* -------- -------- -------- 常见样本 -------- -------- -------- */
 /* 炸药与原材料 */
 export function addExploSample(data) {
   return service({
@@ -53,7 +53,7 @@ export function addDevShapeSample(data) {
   })
 }
 
-/* -------- 案件物证 -------- -------- -------- */
+/* -------- -------- -------- 案件物证 -------- -------- -------- */
 /* 炸药与原材料 */
 export function addExploEvis(data) {
   return service({

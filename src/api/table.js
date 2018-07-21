@@ -1,6 +1,6 @@
 import service from '@/utils/request'
 
-/* -------- 人员管理 -------- -------- -------- */
+/* -------- -------- -------- 人员管理 -------- -------- -------- */
 export function getPeopleList(params) {
   return service({
     url: '/users/',
@@ -33,7 +33,7 @@ export function deletePeople(username) {
   })
 }
 
-/* -------- 常见样本 -------- -------- -------- */
+/* -------- -------- -------- 常见样本 -------- -------- -------- */
 /* 炸药与原材料 */
 export function getExploSampleList(params) {
   return service({
@@ -148,7 +148,7 @@ export function updateDevShapeMatch() {
   })
 }
 
-/* -------- 案件物证 -------- -------- -------- */
+/* -------- -------- -------- 案件物证 -------- -------- -------- */
 /* 炸药与原材料 */
 export function getExploEvisList(params) {
   return service({
@@ -241,7 +241,6 @@ export function deleteDevShapeEvis(id) {
     method: 'delete',
   })
 }
-
 
 
 

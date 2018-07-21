@@ -323,7 +323,7 @@ export const asyncRouterMap = [
     meta: { title: '分析研判' },
     children: [
       {
-        path: 'explosiveAnalysis',
+        path: 'explosiveAnalysis/:id',
         name: 'explosiveAnalysis',
         component: _import('AnalysisAndJudgment/explosiveAnalysis'),
         meta: { title: '炸药与原材料分析' }
