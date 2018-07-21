@@ -7,7 +7,7 @@ import Highcharts from 'highcharts/highstock';
 import HighchartsMore from 'highcharts/highcharts-more';
 import HighchartsDrilldown from 'highcharts/modules/drilldown';
 import Highcharts3D from 'highcharts/highcharts-3d';
-
+import $ from 'jquery'
 
 HighchartsMore(Highcharts)
 HighchartsDrilldown(Highcharts);
@@ -54,10 +54,10 @@ export default {
               color: 'blue'
           }]
       },
-      styles: {
-        width: 1100,
-        height: 600
-      }
+      // styles: {
+      //   width: 1100,
+      //   height: 600
+      // }
     }
   },
   mounted() {

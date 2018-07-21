@@ -6,9 +6,9 @@
       <el-tab-pane label="XRD" name="first">XRD
         <div>
           <el-table
-            :data="matchDataItems"
+            :data="matchXRDItems"
             border fit highlight-current-row stripe
-            style="width: 1101px; margin-top: 10px;">
+            style="width: 865px; margin-top: 10px;">
 
             <el-table-column
               prop="exploEvi.evidenceID"
@@ -31,12 +31,12 @@
               width="150">
             </el-table-column>
 
-            <el-table-column
+            <!-- <el-table-column
               prop="matchModel"
               label="matchModel"
               align="center"
               width="150">
-            </el-table-column>
+            </el-table-column> -->
 
             <el-table-column
               prop="matchDegree"
@@ -45,12 +45,12 @@
               width="150">
             </el-table-column>
 
-            <el-table-column
+            <!-- <el-table-column
               prop="isSure"
               label="isSure"
               align="center"
               width="100">
-            </el-table-column>
+            </el-table-column> -->
 
             <el-table-column
               align="center"
@@ -72,7 +72,7 @@
       <el-tab-pane label="XRF" name="second">XRF
         <div>
           <el-table
-            :data="matchDataItems"
+            :data="matchXRFItems"
             border fit highlight-current-row stripe
             style="width: 1051px; margin-top: 10px;">
 
@@ -203,134 +203,10 @@
       </el-tab-pane>
       <el-tab-pane label="FTIR" name="fourth">FTIR
         <div>
-          <el-table
-            :data="matchDataItems"
-            border fit highlight-current-row stripe
-            style="width: 1051px; margin-top: 10px;">
-
-            <el-table-column
-              prop="exploEvi_id"
-              label="exploEvi_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="exploSample_id"
-              label="exploSample_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchType"
-              label="matchType"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchModel"
-              label="matchModel"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchDegree"
-              label="matchDegree"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="isSure"
-              label="isSure"
-              align="center"
-              width="100">
-            </el-table-column>
-
-            <el-table-column
-              align="center"
-              fixed="right"
-              label="操作"
-              width="200">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="drawChart(scope.$index, scope.row)">
-                  绘图
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="Raman" name="">Raman
         <div>
-          <el-table
-            :data="matchDataItems"
-            border fit highlight-current-row stripe
-            style="width: 1051px; margin-top: 10px;">
-
-            <el-table-column
-              prop="exploEvi_id"
-              label="exploEvi_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="exploSample_id"
-              label="exploSample_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchType"
-              label="matchType"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchModel"
-              label="matchModel"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchDegree"
-              label="matchDegree"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="isSure"
-              label="isSure"
-              align="center"
-              width="100">
-            </el-table-column>
-
-            <el-table-column
-              align="center"
-              fixed="right"
-              label="操作"
-              width="200">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="drawChart(scope.$index, scope.row)">
-                  绘图
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -386,10 +262,25 @@ export default {
     return {
       allMatchData: null,
       matchDataItems: [],
+      matchXRDItems: [],
+      matchXRFItems: [],
       drawChartFlag: false,
       drawExploSampleID: null,
-      activeName: 'first'
+      activeName: 'first',
+      styles: {
+        width: 1200,
+        height: 600
+      },
+      styles_xrf: {
+        width: 1200,
+        height: 600
+      },
     }
+  },
+
+  components: {
+    XrdComponent,
+    XrfComponent
   },
 
   created() {
@@ -399,22 +290,28 @@ export default {
   methods: {
     fetchData() {
       let id = this.$route.params.id
-      console.log('---- fetchData this.$route.params.id', id)
+      console.log('---- fetchData this.$route.params.id:', id)
       exploMatchs().then(response => {
         this.allMatchData = response.data
         this.matchDataItems = this.allMatchData.filter((matchItem) => {
-          console.log('---- filterMatchData matchItem.exploEvi.id', matchItem.exploEvi.id)
+          console.log('---- exploMatchs matchItem.exploEvi.id:', matchItem.exploEvi.id)
           return matchItem.exploEvi.id == this.$route.params.id
         })
+        this.filterMatchData();
       })
     },
 
-    filterMatchData(matchItem) {
-      console.log('---- filterMatchData matchItem.exploEvi.id', matchItem.exploEvi.id)
-      if(matchItem.exploEvi.id === this.$route.params.id)
-        return true
-      else
-        return false
+    filterMatchData() {
+      /* XRD */
+      this.matchXRDItems = this.matchDataItems.filter((matchItem) => {
+          console.log('---- filterMatchData matchItem.matchType:', matchItem.matchType)
+          return matchItem.matchType == 3
+        })
+      /* XRF */
+      this.matchXRFItems = this.matchDataItems.filter((matchItem) => {
+          console.log('---- filterMatchData matchItem.matchType:', matchItem.matchType)
+          return matchItem.matchType == 4
+        })
     },
 
     handleClick(tab, event) {

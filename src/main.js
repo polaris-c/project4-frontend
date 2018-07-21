@@ -15,6 +15,12 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+
+import $ from 'jquery'
+
+Vue.use(VueAxios, axios)
 Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
