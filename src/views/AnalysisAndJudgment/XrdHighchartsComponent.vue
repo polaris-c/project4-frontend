@@ -8,13 +8,15 @@ import HighchartsMore from 'highcharts/highcharts-more';
 import HighchartsDrilldown from 'highcharts/modules/drilldown';
 import Highcharts3D from 'highcharts/highcharts-3d';
 import $ from 'jquery'
+import { getExploMatchsList, getExploMatchsItem, getData } from '@/api/analysis'
+import { getExploSampleList, showExploSample, getExploEvisList, showExploEvis } from '@/api/table'
 
 HighchartsMore(Highcharts)
 HighchartsDrilldown(Highcharts);
 Highcharts3D(Highcharts);
 
 export default {
-  props: ['styles'],
+  props: ['drawItemID'],
   name: 'highcharts',
   data() {
     return {
@@ -54,23 +56,35 @@ export default {
               color: 'blue'
           }]
       },
-      // styles: {
-      //   width: 1100,
-      //   height: 600
-      // }
+      styles: {
+        width: 1200,
+        height: 600
+      },
+      sampleData: null,
+      eviData: null,
+      sampleDataArray2D: null,
+      eviDataArray2D: null,
     }
   },
   mounted() {
-    this.initChart();
+    console.log('---- XRD HighChart ID:', this.drawItemID)
+    this.getMatchsItem()
+    // this.initChart()
   },
   methods: {
     initChart() {
-      console.log(this.$el);
+      // console.log(this.$el);
+      console.log('---- ---- initChart');
       this.$el.style.width = (this.styles.width || 800) + 'px';
       this.$el.style.height = (this.styles.height || 400) + 'px';
 
-      var data_xrd_test = this.getJson('../../handled_json/188-ka.json')
-      var data_xrd_sample = this.getJson('../../handled_json/kclo4-1-30-ka.json')
+      // var data_xrd_test = this.getJson('../../handled_json/188-ka.json')
+      // var data_xrd_sample = this.getJson('../../handled_json/kclo4-1-30-ka.json')
+      var data_xrd_test = this.eviDataArray2D
+      var data_xrd_sample = this.sampleDataArray2D
+
+      // console.log('---- data_xrd_test: ', data_xrd_test)
+      // console.log('---- data_xrd_sample: ', data_xrd_sample)
 
       this.options.xAxis.categories = data_xrd_test[0]
       this.options.series[0].data = data_xrd_test[1]
@@ -88,6 +102,78 @@ export default {
         });
       });
       return data_xrd;
+    },
+
+    getMatchsItem() {
+      getExploMatchsItem(this.drawItemID).then((response) => {
+        console.log('---- ---- getMatchsItem')
+        this.getSampleData(response.data.exploSample)
+        this.getEviData(response.data.exploEvi)
+      })
+    },
+    getSampleData(SampleID) {
+      showExploSample(SampleID).then((response) => {
+
+        // console.log('---- getSampleData:' , response.data.exploSampleFile)  //detectType: 3
+        this.sampleData = response.data.exploSampleFile.filter((matchItem) => {
+          // console.log('---- getSampleData matchItem:' , matchItem)
+          return matchItem.detectType == 3
+        })
+        // console.log('---- getSampleDataURL:' , this.sampleData[0].handledUrl)
+
+        getData(this.sampleData[0].handledUrl).then((response) => {
+          let dataStr = response.data
+          dataStr = dataStr.replace('\r\n', ' ')
+          dataStr = dataStr.replace('\r\n', '')
+          let dataArray = dataStr.split(" ")
+          dataArray = dataArray.map((currentValue) => {
+            return parseFloat(currentValue)
+          })
+          let dataLength = dataArray.length / 2
+          let xData = dataArray.slice(0, dataLength)
+          let yData = dataArray.slice(dataLength, )
+          // console.log('---- getData to array:' , xData)
+          // console.log('---- getData to array:' , yData)
+          let dataArray2D = []
+          dataArray2D[0] = xData
+          dataArray2D[1] = yData
+          // console.log('---- getData to 2Darray:' , dataArray2D)
+          this.sampleDataArray2D = dataArray2D
+        })
+      })
+    },
+    getEviData(EviID) {
+      showExploEvis(EviID).then((response) => {
+
+        // console.log('---- getEvisData:' , response.data.exploEviFile)  //detectType: 3
+        this.eviData = response.data.exploEviFile.filter((matchItem) => {
+          // console.log('---- getSampleData matchItem:' , matchItem)
+          return matchItem.detectType == 3
+        })
+        // console.log('---- getEvisDataURL:' , this.eviData[0].handledUrl)
+
+        getData(this.eviData[0].handledUrl).then((response) => {
+          let dataStr = response.data
+          dataStr = dataStr.replace('\r\n', ' ')
+          dataStr = dataStr.replace('\r\n', '')
+          let dataArray = dataStr.split(" ")
+          dataArray = dataArray.map((currentValue) => {
+            return parseFloat(currentValue)
+          })
+          let dataLength = dataArray.length / 2
+          let xData = dataArray.slice(0, dataLength)
+          let yData = dataArray.slice(dataLength, )
+          // console.log('---- getData to array:' , xData)
+          // console.log('---- getData to array:' , yData)
+          let dataArray2D = []
+          dataArray2D[0] = xData
+          dataArray2D[1] = yData
+          // console.log('---- getData to 2Darray:' , dataArray2D)
+          this.eviDataArray2D = dataArray2D
+          setTimeout(this.initChart(), 0);
+        })
+
+      })
     },
   }
 }

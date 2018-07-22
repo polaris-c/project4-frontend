@@ -10,7 +10,7 @@
       label-width="0px"
       class="card-box login-form">
 
-      <h3 class="title">系 统 登 陆</h3>
+      <h3 class="title">系 统 登 录</h3>
 
       <!-- 用户名输入 -->
       <el-form-item prop="">
@@ -52,7 +52,7 @@
           style="width:100%;" 
           :loading="loading" 
           @click.native.prevent="handleLogin">
-          登 陆
+          登 录
         </el-button>
       </el-form-item>
 

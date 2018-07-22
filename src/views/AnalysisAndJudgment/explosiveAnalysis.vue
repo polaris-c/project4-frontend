@@ -31,26 +31,12 @@
               width="150">
             </el-table-column>
 
-            <!-- <el-table-column
-              prop="matchModel"
-              label="matchModel"
-              align="center"
-              width="150">
-            </el-table-column> -->
-
             <el-table-column
               prop="matchDegree"
               label="matchDegree"
               align="center"
               width="150">
             </el-table-column>
-
-            <!-- <el-table-column
-              prop="isSure"
-              label="isSure"
-              align="center"
-              width="100">
-            </el-table-column> -->
 
             <el-table-column
               align="center"
@@ -137,68 +123,6 @@
       </el-tab-pane>
       <el-tab-pane label="GC-MS" name="third">GCMS
         <div>
-          <el-table
-            :data="matchDataItems"
-            border fit highlight-current-row stripe
-            style="width: 1051px; margin-top: 10px;">
-
-            <el-table-column
-              prop="exploEvi_id"
-              label="exploEvi_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="exploSample_id"
-              label="exploSample_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchType"
-              label="matchType"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchModel"
-              label="matchModel"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchDegree"
-              label="matchDegree"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="isSure"
-              label="isSure"
-              align="center"
-              width="100">
-            </el-table-column>
-
-            <el-table-column
-              align="center"
-              fixed="right"
-              label="操作"
-              width="200">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="drawChart(scope.$index, scope.row)">
-                  绘图
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="FTIR" name="fourth">FTIR
@@ -220,15 +144,15 @@
 
     <div 
       id="highChart" 
-      v-if="drawChartFlag" 
+      v-if="drawXRDChartFlag" 
       style="width: 100%; height: 600px; background: #EFEFEF; margin-top: 50px">
       <!-- {{ drawExploSampleID }} -->
-      <xrd-component :styles="styles" ref="simpleChart"></xrd-component>
+      <xrd-component :drawItemID="drawItemID" ref="simpleChart"></xrd-component>
     </div>
 
     <div
       id="highChart_xrf"
-      v-if="drawChartFlag"
+      v-if="drawXRFChartFlag"
       style="width: 100%; height: 600px; background: #EFEFEF; margin-top: 50px">
       <!-- {{ drawExploSampleID }} -->
       <xrf-component :stylesxrf="styles_xrf" ref="simpleChart"></xrf-component>
@@ -244,7 +168,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { exploMatchs } from '@/api/analysis'
+import { getExploMatchsList, getExploMatchsItem } from '@/api/analysis'
 import Highcharts from 'highcharts/highstock';
 import HighchartsMore from 'highcharts/highcharts-more';
 HighchartsMore(Highcharts)
@@ -264,8 +188,9 @@ export default {
       matchDataItems: [],
       matchXRDItems: [],
       matchXRFItems: [],
-      drawChartFlag: false,
-      drawExploSampleID: null,
+      drawXRDChartFlag: false,
+      drawXRFChartFlag: false,
+      drawItemID: null,
       activeName: 'first',
       styles: {
         width: 1200,
@@ -291,10 +216,10 @@ export default {
     fetchData() {
       let id = this.$route.params.id
       console.log('---- fetchData this.$route.params.id:', id)
-      exploMatchs().then(response => {
+      getExploMatchsList().then(response => {
         this.allMatchData = response.data
         this.matchDataItems = this.allMatchData.filter((matchItem) => {
-          console.log('---- exploMatchs matchItem.exploEvi.id:', matchItem.exploEvi.id)
+          console.log('---- getExploMatchsList matchItem.exploEvi.id:', matchItem.exploEvi.id)
           return matchItem.exploEvi.id == this.$route.params.id
         })
         this.filterMatchData();
@@ -315,16 +240,32 @@ export default {
     },
 
     handleClick(tab, event) {
-      console.log('--- handleClick: ', tab, event);
+      // console.log('--- handleClick: ', tab, event)
+      this.drawXRDChartFlag = false
+      this.drawXRFChartFlag = false
     },
 
     drawChart(index, row) {
-      console.log('--- drawChart: ', index, row)
-      this.drawChartFlag = true
-      this.drawExploSampleID = row.exploSample_id
+      // console.log('--- drawChart: ', index, row)
+      this.drawXRDChartFlag = false
+      this.drawItemID = null
+      
+      if (row.matchType == 3) {
+        this.drawXRDChartFlag = true
+        this.drawItemID = row.id
+        console.log('---- drawChart this.drawItemID:', this.drawItemID)
+      } 
+      else if (row.matchType == 4) {
+        this.drawXRFChartFlag = true
+      }
+      else {
+
+      }
     },
 
     goBack() {
+      this.drawXRDChartFlag = false
+      this.drawXRFChartFlag = false
       this.$router.go(-1)
     }
   }
