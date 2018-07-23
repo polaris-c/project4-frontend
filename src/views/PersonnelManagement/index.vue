@@ -64,7 +64,7 @@
 
       <el-table-column 
         align="center" 
-        label='userID' 
+        label='账户' 
         fixed="left"
         width="100">
         <template slot-scope="scope">
@@ -74,7 +74,7 @@
 
       <el-table-column 
         align="center" 
-        label="name" 
+        label="姓名" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
@@ -83,7 +83,7 @@
 
       <el-table-column 
         align="center" 
-        label="gender" 
+        label="性别" 
         width="100">
         <template slot-scope="scope">
           <el-tag 
@@ -95,7 +95,7 @@
 
       <el-table-column 
         align="center" 
-        label="phone">
+        label="联系方式">
         <template slot-scope="scope">
           <span>{{scope.row.phone}}</span>
         </template>
@@ -103,7 +103,7 @@
 
       <el-table-column 
         align="center" 
-        label="role">
+        label="职权">
         <template slot-scope="scope">
           <span>{{scope.row.role}}</span>
         </template>
@@ -112,7 +112,7 @@
       <el-table-column 
         align="center"
         class-name="status-col" 
-        label="isDelete" 
+        label="是否在任" 
         width="150" >
         <template slot-scope="scope">
           <el-tag

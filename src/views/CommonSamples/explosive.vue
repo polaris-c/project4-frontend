@@ -63,7 +63,7 @@
 
       <el-table-column 
         align="center" 
-        label="sampleID" 
+        label="样本编号" 
         fixed="left"
         width="100">
         <template slot-scope="scope">
@@ -73,7 +73,7 @@
 
       <el-table-column 
         align="center" 
-        label="sname" 
+        label="样本名称" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.sname}}</span>
@@ -82,7 +82,7 @@
 
       <el-table-column 
         align="center" 
-        label="inputDate" 
+        label="录入时间" 
         width="150">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
@@ -92,7 +92,7 @@
 
       <el-table-column 
         align="center" 
-        label="sampleState" 
+        label="样本状态" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.sampleState}}</span>
@@ -101,7 +101,7 @@
 
       <el-table-column 
         align="center" 
-        label="sampleOrigin" 
+        label="样本产地" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.sampleOrigin}}</span>
@@ -110,7 +110,7 @@
 
       <el-table-column 
         align="center" 
-        label="sampleType" 
+        label="样本种类" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.sampleType}}</span>
@@ -119,7 +119,7 @@
 
       <el-table-column 
         align="center" 
-        label="sampleMake" 
+        label="样本制备方法" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.sampleMake}}</span>
@@ -128,7 +128,7 @@
 
       <el-table-column 
         align="center" 
-        label="sampleDraw" 
+        label="样本提取方法" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.sampleDraw}}</span>
@@ -137,7 +137,7 @@
 
       <el-table-column 
         align="center" 
-        label="sampleAnalyse" 
+        label="样本分析方法" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.sampleAnalyse}}</span>
@@ -146,7 +146,7 @@
 
       <el-table-column 
         align="center" 
-        label="analyseCondition" 
+        label="分析条件" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.analyseCondition}}</span>

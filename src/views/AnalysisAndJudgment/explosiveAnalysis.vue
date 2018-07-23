@@ -12,28 +12,28 @@
 
             <el-table-column
               prop="exploEvi.evidenceID"
-              label="exploEvi_evidenceID"
+              label="物证编号"
               align="center"
               width="180">
             </el-table-column>
 
             <el-table-column
               prop="exploSample.sname"
-              label="exploSample_sname"
+              label="样本名称"
               align="center"
               width="180">
             </el-table-column>
 
             <el-table-column
               prop="matchType"
-              label="matchType"
+              label="数据类型"
               align="center"
               width="150">
             </el-table-column>
 
             <el-table-column
               prop="matchDegree"
-              label="matchDegree"
+              label="匹配度"
               align="center"
               width="150">
             </el-table-column>

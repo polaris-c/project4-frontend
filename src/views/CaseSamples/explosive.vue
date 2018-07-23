@@ -54,7 +54,7 @@
 
       <el-table-column 
         align="center" 
-        label="evidenceID" 
+        label="物证编号" 
         fixed="left"
         width="100">
         <template slot-scope="scope">
@@ -64,7 +64,7 @@
 
       <el-table-column 
         align="center" 
-        label="caseID" 
+        label="案件编号" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.caseID}}</span>
@@ -73,7 +73,7 @@
 
       <el-table-column 
         align="center" 
-        label="inputDate" 
+        label="录入日期" 
         width="150">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
@@ -83,7 +83,7 @@
 
       <el-table-column 
         align="center" 
-        label="eviState" 
+        label="物证状态" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviState}}</span>
@@ -92,7 +92,7 @@
 
       <el-table-column 
         align="center" 
-        label="eviMake" 
+        label="物证制备方法" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviMake}}</span>
@@ -101,7 +101,7 @@
 
       <el-table-column 
         align="center" 
-        label="eviDraw" 
+        label="物证提取方法" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviDraw}}</span>
@@ -110,7 +110,7 @@
 
       <el-table-column 
         align="center" 
-        label="eviAnalyse" 
+        label="物证分析方法" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviAnalyse}}</span>
@@ -119,7 +119,7 @@
 
       <el-table-column 
         align="center" 
-        label="analyseCondition" 
+        label="分析条件" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.analyseCondition}}</span>

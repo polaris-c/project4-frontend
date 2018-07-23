@@ -8,15 +8,15 @@
     </div>
 
     <div class="dashboard-text">
-      username: {{ username }}
+      账户: {{ username }}
     </div>
 
     <div class="dashboard-text">
-      name: {{ name }}
+      姓名: {{ name }}
     </div>
 
     <div class="dashboard-text">
-      role: {{ role }}
+      系统职权: {{ roleStr }}
     </div>
 
   </div>
@@ -34,6 +34,23 @@ export default {
       'role',
       'avatar'
     ])
+  },
+  data() {
+    return {
+      roleStr: null
+    }
+  },
+  mounted() {
+    switch(this.role) {
+      case 1: this.roleStr = '超级管理员'
+        break
+      case 2: this.roleStr = '管理员'
+        break
+      case 3: this.roleStr = '普通用户'
+        break
+      default: this.roleStr = '未指定'
+        break
+    }
   }
 }
 </script>
