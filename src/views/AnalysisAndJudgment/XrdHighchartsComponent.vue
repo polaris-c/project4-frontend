@@ -123,24 +123,25 @@ export default {
     getDataPromise() {
       return new Promise((resolve, reject) => {
         this.getMatchsItem(resolve, reject)
-        setTimeout(() => {
-            if (this.sampleDataArray2D && this.eviDataArray2D) {
-            resolve();
-          } else {
-            reject();
-          }
-        } , 2000)
+        // setTimeout(() => {
+        //     if (this.sampleDataArray2D && this.eviDataArray2D) {
+        //     resolve();
+        //   } else {
+        //     reject();
+        //   }
+        // } , 2000)
       }); 
     },
 
     getMatchsItem(resolve, reject) {
       getExploMatchsItem(this.drawItemID).then((response) => {
         console.log('---- ---- getMatchsItem')
-        this.getSampleData(response.data.exploSample)
-        this.getEviData(response.data.exploEvi)
+        // this.getSampleData(response.data.exploSample)
+        // this.getEviData(response.data.exploEvi, resolve)
+        this.getAllData(response.data.exploSample, response.data.exploEvi, resolve, reject)
       })
     },
-    getSampleData(SampleID) {
+    getAllData(SampleID, EviID, resolve, reject) {
       showExploSample(SampleID).then((response) => {
         /* exploSample.exploSampleFile.detectType */
         this.sampleData = response.data.exploSampleFile.filter((matchItem) => {
@@ -162,18 +163,20 @@ export default {
           dataArray2D[1] = yData
           this.sampleDataArray2D = dataArray2D
         })
+        this.getEviData(EviID, resolve)
       })
     },
-    getEviData(EviID) {
+    getSampleData(SampleID) {
+      
+    },
+    getEviData(EviID, resolve) {
       showExploEvis(EviID).then((response) => {
-
         // console.log('---- getEvisData:' , response.data.exploEviFile)  //detectType: 3
         this.eviData = response.data.exploEviFile.filter((matchItem) => {
           // console.log('---- getSampleData matchItem:' , matchItem)
           return matchItem.detectType == 3
         })
         // console.log('---- getEvisDataURL:' , this.eviData[0].handledUrl)
-
         getData(this.eviData[0].handledUrl).then((response) => {
           let dataStr = response.data
           dataStr = dataStr.replace('\r\n', ' ')
@@ -192,7 +195,7 @@ export default {
           dataArray2D[1] = yData
           console.log('---- getData to 2Darray:' , dataArray2D)
           this.eviDataArray2D = dataArray2D
-          // setTimeout(this.initChart(), 0);
+          resolve()
         })
 
       })
