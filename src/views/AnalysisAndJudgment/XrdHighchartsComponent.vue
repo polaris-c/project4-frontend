@@ -67,10 +67,26 @@ export default {
     }
   },
   mounted() {
-    console.log('---- XRD HighChart ID:', this.drawItemID)
-    this.getMatchsItem()
-    // this.initChart()
+    console.log('---- HighChart init ID:', this.drawItemID)
+    this.getDataPromise().then((value) => {
+      this.initChart()
+    }).catch((error) => {
+      console.log('++++ Get Data Error ++++', error);
+    })
   },
+  watch: {
+    drawItemID: function() {
+      console.log('---- HighChart update ID:', this.drawItemID)
+      this.sampleDataArray2D = null
+      this.eviDataArray2D = null
+      this.getDataPromise().then((value) => {
+        this.initChart()
+      }).catch((error) => {
+        console.log('++++ Get Data Error ++++', error);
+      })
+    }
+  },
+
   methods: {
     initChart() {
       // console.log(this.$el);
@@ -104,7 +120,20 @@ export default {
       return data_xrd;
     },
 
-    getMatchsItem() {
+    getDataPromise() {
+      return new Promise((resolve, reject) => {
+        this.getMatchsItem(resolve, reject)
+        setTimeout(() => {
+            if (this.sampleDataArray2D && this.eviDataArray2D) {
+            resolve();
+          } else {
+            reject();
+          }
+        } , 2000)
+      }); 
+    },
+
+    getMatchsItem(resolve, reject) {
       getExploMatchsItem(this.drawItemID).then((response) => {
         console.log('---- ---- getMatchsItem')
         this.getSampleData(response.data.exploSample)
@@ -113,14 +142,10 @@ export default {
     },
     getSampleData(SampleID) {
       showExploSample(SampleID).then((response) => {
-
-        // console.log('---- getSampleData:' , response.data.exploSampleFile)  //detectType: 3
+        /* exploSample.exploSampleFile.detectType */
         this.sampleData = response.data.exploSampleFile.filter((matchItem) => {
-          // console.log('---- getSampleData matchItem:' , matchItem)
           return matchItem.detectType == 3
         })
-        // console.log('---- getSampleDataURL:' , this.sampleData[0].handledUrl)
-
         getData(this.sampleData[0].handledUrl).then((response) => {
           let dataStr = response.data
           dataStr = dataStr.replace('\r\n', ' ')
@@ -132,12 +157,9 @@ export default {
           let dataLength = dataArray.length / 2
           let xData = dataArray.slice(0, dataLength)
           let yData = dataArray.slice(dataLength, )
-          // console.log('---- getData to array:' , xData)
-          // console.log('---- getData to array:' , yData)
           let dataArray2D = []
           dataArray2D[0] = xData
           dataArray2D[1] = yData
-          // console.log('---- getData to 2Darray:' , dataArray2D)
           this.sampleDataArray2D = dataArray2D
         })
       })
@@ -168,9 +190,9 @@ export default {
           let dataArray2D = []
           dataArray2D[0] = xData
           dataArray2D[1] = yData
-          // console.log('---- getData to 2Darray:' , dataArray2D)
+          console.log('---- getData to 2Darray:' , dataArray2D)
           this.eviDataArray2D = dataArray2D
-          setTimeout(this.initChart(), 0);
+          // setTimeout(this.initChart(), 0);
         })
 
       })

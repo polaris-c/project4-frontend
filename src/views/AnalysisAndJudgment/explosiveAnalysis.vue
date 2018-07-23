@@ -219,7 +219,7 @@ export default {
       getExploMatchsList().then(response => {
         this.allMatchData = response.data
         this.matchDataItems = this.allMatchData.filter((matchItem) => {
-          console.log('---- getExploMatchsList matchItem.exploEvi.id:', matchItem.exploEvi.id)
+          // console.log('---- getExploMatchsList matchItem.exploEvi.id:', matchItem.exploEvi.id)
           return matchItem.exploEvi.id == this.$route.params.id
         })
         this.filterMatchData();
@@ -229,12 +229,12 @@ export default {
     filterMatchData() {
       /* XRD */
       this.matchXRDItems = this.matchDataItems.filter((matchItem) => {
-          console.log('---- filterMatchData matchItem.matchType:', matchItem.matchType)
+          // console.log('---- filterMatchData matchItem.matchType:', matchItem.matchType)
           return matchItem.matchType == 3
         })
       /* XRF */
       this.matchXRFItems = this.matchDataItems.filter((matchItem) => {
-          console.log('---- filterMatchData matchItem.matchType:', matchItem.matchType)
+          // console.log('---- filterMatchData matchItem.matchType:', matchItem.matchType)
           return matchItem.matchType == 4
         })
     },
