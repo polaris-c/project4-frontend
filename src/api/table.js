@@ -165,9 +165,9 @@ export function showExploEvis(id) {
   })
 }
 
-export function updateExploEvis(id, data) {
+export function updateExploEvis(data) {
   return service({
-    url: '/exploEvis/' + id + '/',
+    url: '/exploEvis/' + data.id + '/',
     method: 'patch',
     data
   })
