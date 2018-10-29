@@ -35,7 +35,7 @@
       </el-button>
 
     </div>
-
+    <!-- <router-view></router-view> -->
     <!-- 数据表格 -->
     <el-table 
       :data="currentList" 
@@ -68,7 +68,12 @@
         fixed="left"
         width="100">
         <template slot-scope="scope">
-          {{scope.row.username}}
+          <el-button 
+            type="text" 
+            size="medium"
+            @click="handleDetail(scope.$index, scope.row)">
+            {{scope.row.username}}
+          </el-button>
         </template>
       </el-table-column>
 
@@ -167,7 +172,7 @@
 
 
     <!-- 弹出框 详细展示 -->
-    <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
+    <!-- <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
       <div style="margin-left: 30px;">
         <img v-if="showPeopleInfo.picUrl" :src="showPeopleInfo.picUrl" class="avatar">
       </div>
@@ -182,10 +187,10 @@
         <el-button type="primary" @click="handleDownload()">导出</el-button>
         <el-button type="" @click="dialogShowVisible = false">返回</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
 
     <!-- 弹出框 编辑功能 -->
-    <el-dialog title="编辑表单" :visible.sync="dialogFormVisible">
+    <!-- <el-dialog title="编辑表单" :visible.sync="dialogFormVisible">
 
       <el-form 
         :model="uploadForm" 
@@ -200,7 +205,6 @@
             action="http://127.0.0.1:8000/users/"
             :show-file-list="false"
             :before-upload="beforeAvatarUpload">
-            <!-- :on-change="showAvatar" -->
             <img v-if="peopleInfoForm.picUrl" :src="peopleInfoForm.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
           </el-upload>
@@ -263,7 +267,7 @@
         <el-button type="" @click="dialogFormVisible = false">取消</el-button>
       </div>
 
-    </el-dialog>
+    </el-dialog> -->
 
   </div>
 </template>
@@ -430,7 +434,7 @@ export default {
     },
 
     handleCreate() {
-      this.$router.push('/PersonnelManagement/form')
+      this.$router.push('/PersonnelManagement/create')
     },
 
     handleDownloadList() {
@@ -438,10 +442,13 @@ export default {
     },
 
     handleDetail(index, row) {
-      showPeople(row.username).then(res => {
-        this.showPeopleInfo = res.data
-      })
-      this.dialogShowVisible = true
+      console.log(row.username)
+      this.$router.push('/PersonnelManagement/detail/' + row.username)
+
+      // showPeople(row.username).then(res => {
+      //   this.showPeopleInfo = res.data
+      // })
+      // this.dialogShowVisible = true
     },
 
     handleEdit(index, row) {

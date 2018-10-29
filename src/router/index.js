@@ -24,6 +24,10 @@ import Layout from '../views/layout/Layout'
     icon: 'svg-name'             the icon show in the sidebar,
   }
 **/
+const superAdmin = 1
+const admin = 2
+const user = 3
+
 export const constantRouterMap = [
   { path: '/login', component: _import('login/index'), hidden: true },
   { path: '/404', component: _import('errorPages/404'), hidden: true },
@@ -72,7 +76,7 @@ export const asyncRouterMap = [
     path: '/PersonnelManagement',
     component: Layout,
     redirect: '/PersonnelManagement/index',
-    meta: { roles: [1, 2] },
+    meta: { roles: [superAdmin, admin] },
     children: [
       {
         path: 'index',
@@ -81,7 +85,6 @@ export const asyncRouterMap = [
         meta: {
           title: '人员管理',
           icon: 'peoples',
-          roles: [1, 2]
         }
       }
     ]
@@ -90,17 +93,29 @@ export const asyncRouterMap = [
   {
     path: '/PersonnelManagement',
     component: Layout,
-    meta: { roles: [1, 2] },
+    meta: { 
+      title: '人员管理操作',
+      roles: [superAdmin, admin] 
+    },
     hidden: true,
     children: [
       {
-        path: 'form',
-        name: 'PersonnelManagementForm',
-        component: _import('PersonnelManagement/form'),
-        meta: {
-          title: '增加人员',
-          roles: [1, 2]
-        }
+        path: 'create',
+        name: 'PersonnelManagement-create',
+        component: _import('PersonnelManagement/create'),
+        meta: { title: '增加人员' }
+      },
+      {
+        path: 'detail/:username',
+        name: 'PersonnelManagement-detail',
+        component: _import('PersonnelManagement/detail'),
+        meta: { title: '查看人员' }
+      },
+      {
+        path: 'update/:userInfo',
+        name: 'PersonnelManagement-update',
+        component: _import('PersonnelManagement/update'),
+        meta: { title: '修改人员' }
       }
     ]
   },
@@ -123,26 +138,13 @@ export const asyncRouterMap = [
         meta: { title: '炸药与原材料', icon: 'table' }
       },
       {
-        path: '/CommonSamples/device',
+        path: 'device',
         name: 'deviceCommonSamples',
-        redirect: '/CommonSamples/device/deviceIngredient',
         component: _import('CommonSamples/device'),
         meta: {
           title: '爆炸装置',
           icon: 'table'
-        },
-        children: [
-          { path: 'deviceIngredient',
-            name: 'deviceIngredientCommonSamples',
-            component: _import('CommonSamples/deviceIngredient'),
-            meta: { title: '爆炸装置-成分' }
-          },
-          { path: 'deviceShape',
-            name: 'deviceShapeCommonSamples',
-            component: _import('CommonSamples/deviceShape'),
-            meta: { title: '爆炸装置-形态' }
-          }
-        ]
+        }
       }
     ]
   },
@@ -150,44 +152,35 @@ export const asyncRouterMap = [
   {
     path: '/CommonSamples',
     component: Layout,
-    meta: { roles: [1, 2] },
+    meta: { 
+      title: '常见样本操作',
+      roles: [superAdmin, admin]
+    },
     hidden: true,
     children: [
       {
         path: 'addExplosive',
         name: 'CommonSamplesExplosiveForm',
         component: _import('CommonSamples/addExplosive'),
-        meta: {
-          title: '增加常见炸药与原材料样本',
-          roles: [1, 2]
-        }
+        meta: { title: '增加炸药与原材料样本' }
       },
       {
         path: 'addDeviceIngredient',
         name: 'CommonSamplesDeviceIngredientForm',
         component: _import('CommonSamples/addDeviceIngredient'),
-        meta: {
-          title: '增加常见爆炸装置成分样本',
-          roles: [1, 2]
-        }
+        meta: { title: '增加爆炸装置成分样本' }
       },
       {
         path: 'addDeviceShape',
         name: 'CommonSamplesDeviceShapeForm',
         component: _import('CommonSamples/addDeviceShape'),
-        meta: {
-          title: '增加常见爆炸装置形态样本',
-          roles: [1, 2]
-        }
+        meta: { title: '增加爆炸装置形态样本' }
       },
       {
         path: 'deviceShapeOperation',
         name: 'CommonSamplesDeviceShapeOperation',
         component: _import('CommonSamples/deviceShapeOperation'),
-        meta: {
-          title: '常见爆炸装置形态图像处理',
-          roles: [1, 2]
-        }
+        meta: { title: '爆炸装置形态图像处理' }
       }
     ]
 
@@ -241,31 +234,25 @@ export const asyncRouterMap = [
     path: '/CaseSamples',
     component: Layout,
     hidden: true,
-    meta: { title: '案件物证', roles: [1, 2, 3] },
+    meta: { title: '案件物证操作'},
     children: [
       {
         path: 'addExplosive',
         name: 'CaseSamplesExplosiveForm',
         component: _import('CaseSamples/addExplosive'),
-        meta: {
-          title: '增加案件物证炸药与原材料样本',
-          roles: [1, 2, 3] }
+        meta: { title: '增加案件物证炸药与原材料样本' }
       },
       {
         path: 'addDeviceIngredient',
         name: 'CaseSamplesDeviceIngredientForm',
         component: _import('CaseSamples/addDeviceIngredient'),
-        meta: {
-          title: '增加案件物证爆炸装置成分样本',
-          roles: [1, 2, 3] }
+        meta: { title: '增加案件物证爆炸装置成分样本' }
       },
       {
         path: 'addDeviceShape',
         name: 'CaseSamplesDeviceShapeForm',
         component: _import('CaseSamples/addDeviceShape'),
-        meta: {
-          title: '增加案件物证爆炸装置形态样本',
-          roles: [1, 2, 3] }
+        meta: { title: '增加案件物证爆炸装置形态样本' }
       }
     ]
   },
