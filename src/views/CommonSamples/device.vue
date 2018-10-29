@@ -54,6 +54,11 @@
       border fit highlight-current-row stripe>
 
       <el-table-column
+        type="selection"
+        width="40">
+      </el-table-column>
+
+      <el-table-column
         align="center"
         type="index"
         :index="startIndex"

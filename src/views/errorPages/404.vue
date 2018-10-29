@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     message() {
-      return '党中央表示这个页面你不能进......'
+      return '这个页面你不能进......'
     }
   }
 }

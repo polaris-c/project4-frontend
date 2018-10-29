@@ -45,6 +45,11 @@
       border fit highlight-current-row stripe>
 
       <el-table-column
+        type="selection"
+        width="40">
+      </el-table-column>
+
+      <el-table-column
         align="center"
         type="index"
         :index="startIndex"
@@ -168,106 +173,6 @@
       </el-pagination>
     </div>
 
-    <!-- 弹出框 详细展示 -->
-    <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
-
-      <div style="margin-left: 30px;">
-        <img v-if="showExploEvisInfo.picUrl" :src="showExploEvisInfo.picUrl" class="avatar">
-      </div>
-
-      <ul>
-        <li v-for="(value, key) in showExploEvisInfo" v-if="key !== 'picUrl' ">
-          <!-- && key !== 'exploSampleFile' -->
-          {{ key }}: {{ value }}
-        </li>
-      </ul>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleDownload()">导出</el-button>
-        <el-button type="" @click="dialogShowVisible = false">返回</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 弹出框 编辑功能 -->
-    <el-dialog title="编辑表单" :visible.sync="dialogFormVisible">
-
-      <el-form
-        :model="explosiveCaseSamplesForm"
-        :rules="explosiveComSamplesRules"
-        ref="explosiveCaseSamplesComponent"
-        label-width="100px" >
-
-        <el-form-item label="物证名称" prop="caseID">
-          <el-input v-model="explosiveCaseSamplesForm.caseID" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="物证编号" prop="evidenceID">
-          <el-input v-model="explosiveCaseSamplesForm.evidenceID" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="处理人员编号" prop="user_id">
-          <el-input v-model="explosiveCaseSamplesForm.user_id" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="录入时间" prop="inputDate">
-          <el-date-picker 
-            v-model="explosiveCaseSamplesForm.inputDate"
-            type="datetime"
-            placeholder="请输入录入时间"
-            style="width: 100%;">
-          </el-date-picker>
-          <!-- {{ explosiveCaseSamplesForm.inputDate }} -->
-        </el-form-item>
-
-        <el-form-item label="物证状态" prop="eviState">
-          <el-input v-model="explosiveCaseSamplesForm.eviState" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="物证制备方法" prop="eviMake">
-          <el-input v-model="explosiveCaseSamplesForm.eviMake" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="物证提取方法" prop="eviDraw">
-          <el-input v-model="explosiveCaseSamplesForm.eviDraw" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="物证分析方法" prop="eviAnalyse">
-          <el-input v-model="explosiveCaseSamplesForm.eviAnalyse" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="分析条件" prop="analyseCondition">
-          <el-input v-model="explosiveCaseSamplesForm.analyseCondition" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="图片描述" prop="picDescrip">
-          <el-input v-model="explosiveCaseSamplesForm.picDescrip" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="物证图片" prop="picUrl">
-          <el-upload 
-            class=""
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            :before-upload="beforeAvatarUpload"
-            >
-            <img v-if="explosiveCaseSamplesForm.picUrl" :src="explosiveCaseSamplesForm.picUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
-          </el-upload>
-        </el-form-item>
-
-        <el-form-item label="备注" prop="note">
-          <el-input type="textarea" v-model="explosiveCaseSamplesForm.note" clearable></el-input>
-        </el-form-item>
-
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="updateEdit">确定</el-button>
-        <el-button type="" @click="dialogFormVisible = false">取消</el-button>
-      </div>
-
-    </el-dialog>
-
   </div>
 </template>
 
@@ -289,48 +194,6 @@ export default {
       currentPage: 1,
       pageSize: 10,
       
-      dialogFormVisible: false,
-      dialogShowVisible: false,
-
-      showExploEvisInfo: {}, // 数据详情对象
-      uploadForm: {}, // 上传用表单数据对象
-      explosiveCaseSamplesForm: {
-        id: null,
-        caseID: null,
-        evidenceID: null,
-        user_id: null,
-        inputDate: null,
-        eviState: null,
-        eviMake: null,
-        eviDraw: null,
-        eviAnalyse: null,
-        analyseCondition: null,
-        picUrl: null,
-        picDescrip: null,
-        note: null
-      },
-      explosiveComSamplesFile: [
-        {
-          user_id: '',
-          inputDate: null,
-          detectDevice: '',
-          detectMrfs: '',
-          detectType: null,
-          docType: null,
-          docUrl: null,
-          key: Date.now()
-        }
-      ],
-      explosiveComSamplesRules: {
-        caseID: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-        ],
-        inputDate: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ]
-      },
-
       formLabelWidth: '120px'
     }
   },
@@ -368,38 +231,38 @@ export default {
     },
 
     handleDetail(index, row) {
-      showExploEvis(row.id).then(res => {
-        this.showExploEvisInfo = res.data
-      })
-      this.dialogShowVisible = true
+      // showExploEvis(row.id).then(res => {
+      //   this.showExploEvisInfo = res.data
+      // })
+      // this.dialogShowVisible = true
     },
 
     handleEdit(index, row) {
-      this.explosiveCaseSamplesForm = Object.assign({}, row)
-      this.explosiveCaseSamplesForm.inputDate = new Date(row.inputDate)
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['explosiveCaseSamplesComponent'].clearValidate()
-      })
+      // this.explosiveCaseSamplesForm = Object.assign({}, row)
+      // this.explosiveCaseSamplesForm.inputDate = new Date(row.inputDate)
+      // this.dialogFormVisible = true
+      // this.$nextTick(() => {
+      //   this.$refs['explosiveCaseSamplesComponent'].clearValidate()
+      // })
     },
 
     updateEdit() {
-      this.$refs['explosiveCaseSamplesComponent'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.explosiveCaseSamplesForm)
-          updateExploEvis(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === tempData.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, tempData)
-                this.handleCurrentChange(this.currentPage)
-                break
-              }
-            }
-          })
-          this.dialogFormVisible = false
-        }
-      })
+      // this.$refs['explosiveCaseSamplesComponent'].validate((valid) => {
+      //   if (valid) {
+      //     const tempData = Object.assign({}, this.explosiveCaseSamplesForm)
+      //     updateExploEvis(tempData).then(() => {
+      //       for (const v of this.list) {
+      //         if (v.id === tempData.id) {
+      //           const index = this.list.indexOf(v)
+      //           this.list.splice(index, 1, tempData)
+      //           this.handleCurrentChange(this.currentPage)
+      //           break
+      //         }
+      //       }
+      //     })
+      //     this.dialogFormVisible = false
+      //   }
+      // })
     },
 
     handleDelete(index, row) {
@@ -437,12 +300,6 @@ export default {
       }
     },
 
-    /* 弹出框 */
-    beforeAvatarUpload(file) {
-      console.log('--- beforeAvatarUpload', file)
-      window.URL = window.URL || window.webkitURL
-      this.explosiveCaseSamplesForm.picUrl = window.URL.createObjectURL(file)
-    }
 
   }
 }

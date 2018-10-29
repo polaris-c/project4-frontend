@@ -18,12 +18,11 @@
 
       <!-- 下载按钮 -->
       <el-button 
-        type="danger" 
-        size="medium"
-        style="margin-left: 30px;"
-        @click = "handleDelete()"
+        type="" 
+        style="margin-left: 20px;"
+        @click = "handleDownloadList()"
         round>
-        删 除
+        数据导出
       </el-button>
 
     </div>
@@ -37,11 +36,6 @@
       border fit highlight-current-row stripe>
 
       <el-table-column
-        type="selection"
-        width="40">
-      </el-table-column>
-
-      <el-table-column
         align="center"
         type="index"
         :index="startIndex"
@@ -51,21 +45,17 @@
 
       <el-table-column 
         align="center" 
-        label="物证编号" 
+        label="evidenceID " 
         fixed="left"
         width="100">
         <template slot-scope="scope">
-          <el-button
-            type="text"
-            @click="analysis(scope.$index, scope.row)">
-          {{scope.row.evidenceID}}
-          </el-button>
+          <span>{{scope.row.evidenceID }}</span>
         </template>
       </el-table-column>
 
       <el-table-column 
         align="center" 
-        label="案件编号" 
+        label="caseID" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.caseID}}</span>
@@ -74,7 +64,7 @@
 
       <el-table-column 
         align="center" 
-        label="录入日期" 
+        label="inputDate" 
         width="150">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
@@ -84,7 +74,7 @@
 
       <el-table-column 
         align="center" 
-        label="物证状态" 
+        label="eviState" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviState}}</span>
@@ -93,7 +83,7 @@
 
       <el-table-column 
         align="center" 
-        label="物证制备方法" 
+        label="eviMake" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviMake}}</span>
@@ -102,7 +92,7 @@
 
       <el-table-column 
         align="center" 
-        label="物证提取方法" 
+        label="eviDraw" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviDraw}}</span>
@@ -111,7 +101,7 @@
 
       <el-table-column 
         align="center" 
-        label="物证分析方法" 
+        label="eviAnalyse" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.eviAnalyse}}</span>
@@ -120,7 +110,7 @@
 
       <el-table-column 
         align="center" 
-        label="分析条件" 
+        label="analyseCondition" 
         width="150">
         <template slot-scope="scope">
           <span>{{scope.row.analyseCondition}}</span>
@@ -128,35 +118,26 @@
       </el-table-column>
 
       <el-table-column 
-        align="center" 
-        label="备注" 
-        width="200">
+        align="center"
+        fixed="right"
+        label="操作"
+        width="250">
         <template slot-scope="scope">
-          <span>{{scope.row.note}}</span>
+          <el-button
+            size="mini"
+            @click="dialogShowVisible = true">
+            <!-- @click="handleEdit(scope.$index, scope.row)" -->
+            最新分析结果
+          </el-button>
+
+          <el-button
+            size="mini"
+            type="primary"
+            @click="analysis(scope.$index, scope.row)">
+            分析处理
+          </el-button>
         </template>
       </el-table-column>
-
-      <!-- <el-table-column 
-          align="center"
-          fixed="right"
-          label="操作"
-          width="250">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="dialogShowVisible = true">
-              @click="handleEdit(scope.$index, scope.row)"
-              最新分析结果
-            </el-button>
-
-            <el-button
-              size="mini"
-              type="primary"
-              @click="analysis(scope.$index, scope.row)">
-              分析处理
-            </el-button>
-          </template>
-      </el-table-column> -->
 
     </el-table>
 
@@ -175,14 +156,11 @@
     </div>
 
     <!-- 弹出框 详细展示 -->
-    <el-dialog 
-      title="注意!" 
-      :visible.sync="dialogShowVisible"
-      width="30%">
-      <div><span>确定要删除吗?</span></div>
+    <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
+
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="">确定</el-button>
-        <el-button type="" @click="dialogShowVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleDownload()">导出</el-button>
+        <el-button type="" @click="dialogShowVisible=false">返回</el-button>
       </div>
 
     </el-dialog>
@@ -191,7 +169,7 @@
 </template>
 
 <script>
-import { getExploEvisList } from '@/api/table'
+import { getDevCompEvisList } from '@/api/table'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -224,7 +202,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getExploEvisList().then(response => {
+      getDevCompEvisList().then(response => {
         this.list = response.data
         this.listLoading = false
         this.handleCurrentChange(this.currentPage)
@@ -235,14 +213,17 @@ export default {
       alert('Search: ' + this.searchInput)
     },
 
-    handleDelete() {
-      this.dialogShowVisible = true
+    handleDownloadList() {
+      alert('已导出！')
     },
 
     analysis(index, row) {
-      console.log('--- analysis: ', index, row.id, this.role)
-      let id = row.id
-      this.$router.push(`/AnalysisAndJudgment/explosiveAnalysis/${id}`)
+      console.log('--- analysis: ', index, row, this.role)
+      this.$router.push('/AnalysisAndJudgment/deviceIngredientAnalysis')
+    },
+
+    handleDownload() {
+      alert('已导出！')
     },
 
     /* 分页 */
@@ -254,6 +235,7 @@ export default {
         this.currentPage = 1
       }
     },
+
     handleCurrentChange(currentPageNum) {
       this.currentList = []
       this.listLength = this.list.length

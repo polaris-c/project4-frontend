@@ -8,7 +8,7 @@ import { getToken, getName } from '@/utils/auth' // 验权
 const whiteList = ['/login'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
-  console.log('<<<<<<<< Jump Start ======')
+  console.log('==== ==== Jump Start <<<< <<<<')
   // console.log('*** Permission router.beforeEach to: ', to)
   // console.log('*** Permission router.beforeEach from: ', from)
   NProgress.start()
@@ -57,6 +57,6 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
-  console.log('*** Permission router.afterEach is OK \n====== Jump Over >>>>>>>>')
+  console.log('*** Permission router.afterEach is OK \n ==== ==== Jump Over >>>> >>>> \n ')
   NProgress.done() // 结束Progress
 })

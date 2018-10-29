@@ -204,28 +204,13 @@ export const asyncRouterMap = [
         meta: { title: '炸药与原材料', icon: 'table' }
       },
       {
-        path: '/CaseSamples/device',
+        path: 'device',
         name: 'deviceCaseSamples',
-        redirect: '/CaseSamples/device/deviceIngredient',
-        component: _import('CaseSamples/device'),
+        component: _import('CaseSamples/deviceIngredient'),
         meta: {
           title: '爆炸装置',
           icon: 'table'
-        },
-        children: [
-          {
-            path: 'deviceIngredient',
-            name: 'deviceIngredientCaseSamples',
-            component: _import('CaseSamples/deviceIngredient'),
-            meta: { title: '爆炸装置-成分' }
-          },
-          {
-            path: 'deviceShape',
-            name: 'deviceShapeCaseSamples',
-            component: _import('CaseSamples/deviceShape'),
-            meta: { title: '爆炸装置-形态' }
-          }
-        ]
+        }
       }
     ]
   },
@@ -265,7 +250,7 @@ export const asyncRouterMap = [
     name: 'AnalysisAndJudgment',
     meta: {
       title: '分析研判',
-      icon: 'example'
+      icon: 'chart'
     },
     children: [
       {
@@ -284,7 +269,7 @@ export const asyncRouterMap = [
         component: _import('AnalysisAndJudgment/device'),
         meta: {
           title: '爆炸装置',
-          icon: 'table'
+          icon: 'tree'
         },
         children: [
           {
@@ -326,6 +311,53 @@ export const asyncRouterMap = [
         name: 'deviceShapeAnalysis',
         component: _import('AnalysisAndJudgment/deviceShapeAnalysis'),
         meta: { title: '爆炸装置成形态分析' }
+      }
+    ]
+  },
+
+  /** **** 研判结果模块路由 ******/
+  {
+    path: '/AnalysisResult',
+    component: Layout,
+    redirect: '/AnalysisResult/explosive',
+    name: 'AnalysisResult',
+    meta: {
+      title: '研判结果',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'explosive',
+        name: 'explosiveAnalysisResult',
+        component: _import('AnalysisResult/explosive/explosive'),
+        meta: {
+          title: '炸药与原材料',
+          icon: 'table'
+        }
+      },
+      {
+        path: '/AnalysisResult/device',
+        name: 'deviceAnalysisResult',
+        redirect: '/AnalysisResult/device/deviceIngredient',
+        component: _import('AnalysisResult/device/deviceIngredient'),
+        meta: {
+          title: '爆炸装置',
+          icon: 'tree'
+        },
+        children: [
+          {
+            path: 'deviceIngredient',
+            name: 'deviceIngredientAnalysisResult',
+            component: _import('AnalysisResult/device/deviceIngredient'),
+            meta: { title: '爆炸装置-成分' }
+          },
+          {
+            path: 'deviceShape',
+            name: 'deviceShapeAnalysisResult',
+            component: _import('AnalysisResult/device/deviceShape'),
+            meta: { title: '爆炸装置-形态' }
+          }
+        ]
       }
     ]
   },

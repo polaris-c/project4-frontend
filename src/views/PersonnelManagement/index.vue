@@ -55,6 +55,11 @@
       </el-table-column> -->
 
       <el-table-column
+        type="selection"
+        width="40">
+      </el-table-column>
+
+      <el-table-column
         align="center"
         type="index"
         :index="startIndex"
@@ -169,105 +174,6 @@
         background>
       </el-pagination>
     </div>
-
-
-    <!-- 弹出框 详细展示 -->
-    <!-- <el-dialog title="详细展示" :visible.sync="dialogShowVisible">
-      <div style="margin-left: 30px;">
-        <img v-if="showPeopleInfo.picUrl" :src="showPeopleInfo.picUrl" class="avatar">
-      </div>
-
-      <ul>
-        <li v-for="(value, key) in showPeopleInfo" v-if="key != 'password' && key != 'picUrl'">
-          {{ key }}: {{ value }} 
-        </li>
-      </ul>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleDownload()">导出</el-button>
-        <el-button type="" @click="dialogShowVisible = false">返回</el-button>
-      </div>
-    </el-dialog> -->
-
-    <!-- 弹出框 编辑功能 -->
-    <!-- <el-dialog title="编辑表单" :visible.sync="dialogFormVisible">
-
-      <el-form 
-        :model="uploadForm" 
-        :rules="rules"
-        ref="peopleInfoComponent" 
-        label-width="100px" 
-        class="">
-
-        <el-form-item label="照片上传" prop="picUrl">
-          <el-upload 
-            class=""
-            action="http://127.0.0.1:8000/users/"
-            :show-file-list="false"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="peopleInfoForm.picUrl" :src="peopleInfoForm.picUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon avatar-uploader"></i>
-          </el-upload>
-        </el-form-item>
-
-        <el-form-item label="人员编号" prop="username">
-          <el-input v-model="uploadForm.username" :placeholder="peopleInfoForm.username" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="人员姓名" prop="name">
-          <el-input v-model="uploadForm.name" :placeholder="peopleInfoForm.name" clearable></el-input>
-        </el-form-item>
-
-        <el-form-item label="密码" prop="password">
-          <el-input  
-            v-model="uploadForm.password" 
-            placeholder="Password-invisible"
-            type="password" 
-            auto-complete="on" 
-            clearable>
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="确认密码" prop="checkPassword">
-          <el-input 
-            v-model="uploadForm.checkPassword" 
-            placeholder="Password-invisible"
-            type="password" 
-            auto-complete="on" 
-            clearable>
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="性别" prop="gender">
-          <el-radio-group v-model="uploadForm.gender">
-            <el-radio label="male">男</el-radio>
-            <el-radio label="female">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="uploadForm.phone" :placeholder="peopleInfoForm.phone"></el-input>
-        </el-form-item>
-
-        <el-form-item label="权限" prop="role">
-          <el-select v-model="uploadForm.role" placeholder="可选择权限">
-            <el-option v-if = "superPermission" label="管理员" value=2></el-option>
-            <el-option label="用户" value=3></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="备注" prop="note">
-          <el-input type="textarea" v-model="uploadForm.note" :placeholder="peopleInfoForm.note"></el-input>
-        </el-form-item>
-
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="updateEdit">确定</el-button>
-        <el-button type="" @click="dialogFormVisible = false">取消</el-button>
-      </div>
-
-    </el-dialog> -->
 
   </div>
 </template>
