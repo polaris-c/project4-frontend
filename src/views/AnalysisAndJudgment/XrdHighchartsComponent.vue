@@ -57,8 +57,8 @@ export default {
           }]
       },
       styles: {
-        width: 1200,
-        height: 600
+        width: 1150,
+        height: 550
       },
       sampleData: null,
       eviData: null,
@@ -91,7 +91,7 @@ export default {
     initChart() {
       // console.log(this.$el);
       console.log('---- ---- initChart');
-      this.$el.style.width = (this.styles.width || 800) + 'px';
+      this.$el.style.width = (this.styles.width || 1000) + 'px';
       this.$el.style.height = (this.styles.height || 400) + 'px';
 
       // var data_xrd_test = this.getJson('../../handled_json/188-ka.json')
@@ -145,7 +145,7 @@ export default {
       showExploSample(SampleID).then((response) => {
         /* exploSample.exploSampleFile.detectType */
         this.sampleData = response.data.exploSampleFile.filter((matchItem) => {
-          return matchItem.detectType == 3
+          return matchItem  //.detectType == 3
         })
         getData(this.sampleData[0].handledUrl).then((response) => {
           let dataStr = response.data
@@ -174,7 +174,7 @@ export default {
         // console.log('---- getEvisData:' , response.data.exploEviFile)  //detectType: 3
         this.eviData = response.data.exploEviFile.filter((matchItem) => {
           // console.log('---- getSampleData matchItem:' , matchItem)
-          return matchItem.detectType == 3
+          return matchItem //.detectType == 3
         })
         // console.log('---- getEvisDataURL:' , this.eviData[0].handledUrl)
         getData(this.eviData[0].handledUrl).then((response) => {
@@ -206,7 +206,7 @@ export default {
 
 <style lang="scss">
   .highcharts-container {
-    width: 800px;
+    width: 400px;
     height: 400px;
   }
 </style>

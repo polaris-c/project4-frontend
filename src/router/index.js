@@ -142,7 +142,7 @@ export const asyncRouterMap = [
         name: 'deviceCommonSamples',
         component: _import('CommonSamples/device'),
         meta: {
-          title: '爆炸装置',
+          title: '爆炸装置组件',
           icon: 'table'
         }
       }
@@ -208,7 +208,7 @@ export const asyncRouterMap = [
         name: 'deviceCaseSamples',
         component: _import('CaseSamples/deviceIngredient'),
         meta: {
-          title: '爆炸装置',
+          title: '爆炸装置组件',
           icon: 'table'
         }
       }
@@ -268,7 +268,7 @@ export const asyncRouterMap = [
         redirect: '/AnalysisAndJudgment/device/deviceIngredient',
         component: _import('AnalysisAndJudgment/device'),
         meta: {
-          title: '爆炸装置',
+          title: '爆炸装置组件',
           icon: 'tree'
         },
         children: [
@@ -341,7 +341,7 @@ export const asyncRouterMap = [
         redirect: '/AnalysisResult/device/deviceIngredient',
         component: _import('AnalysisResult/device/deviceIngredient'),
         meta: {
-          title: '爆炸装置',
+          title: '爆炸装置组件',
           icon: 'tree'
         },
         children: [

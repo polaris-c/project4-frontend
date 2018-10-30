@@ -1,60 +1,65 @@
 <template>
   <div class="app-container">
-    <div>炸药与原材料分析匹配结果</div>
+    <div>
+      <el-row>
+        <el-col :span="19">炸药与原材料 分析研判</el-col>
+        <el-col :span="5">
+          <el-button type="warning" size="medium">识 别</el-button>
+          <el-button type="success" size="medium">核 准</el-button>
+          <el-button type="primary" size="medium">报 告</el-button>
+        </el-col>
+      </el-row>
+    </div>
 
-    <el-tabs v-model="activeName" type="card" @tab-click="handleClick" style="margin-top:20px;">
-      <el-tab-pane label="XRD" name="first">XRD
-        <div>
-          <el-table
-            :data="matchXRDItems"
-            border fit highlight-current-row stripe
-            style="width: 865px; margin-top: 10px;">
-
-            <el-table-column
-              prop="exploEvi.evidenceID"
-              label="物证编号"
-              align="center"
-              width="180">
-            </el-table-column>
-
-            <el-table-column
-              prop="exploSample.sname"
-              label="样本名称"
-              align="center"
-              width="180">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchType"
-              label="数据类型"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchDegree"
-              label="匹配度"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              align="center"
-              fixed="right"
-              label="操作"
-              width="200">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="drawChart(scope.$index, scope.row)">
-                  绘图
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+    <el-tabs 
+      v-model="activeName" 
+      type="card" 
+      @tab-click="handleClick" 
+      style="margin-top:10px;">
+      <el-tab-pane label="XRD" name="first">
+        <el-row :gutter="10">
+          <el-col :span="19">
+            <div 
+              id="highChart" 
+              v-if="true" 
+              style="width: 100%; height: 550px; background: #EFEFEF; margin-top: 0px">
+              <!-- {{ drawExploSampleID }} -->
+              <xrd-component :drawItemID="drawItemID" ref="simpleChart"></xrd-component>
+            </div>
+          </el-col>
+          
+          <el-col :span="5">
+            <el-table
+              :data="matchXRDItems"
+              border fit highlight-current-row stripe
+              style="">
+              <el-table-column
+                prop="exploSample.sname"
+                label="样本名称"
+                align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    @click="drawChart(scope.$index, scope.row)">
+                    {{scope.row.exploSample.sname}}
+                  </el-button>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="matchDegree"
+                label="匹配度"
+                align="center">
+              </el-table-column>
+              <el-table-column
+                label="状态"
+                align="center">
+                
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
       </el-tab-pane>
+
       <el-tab-pane label="XRF" name="second">XRF
         <div>
           <el-table
@@ -121,6 +126,7 @@
           </el-table>
         </div>
       </el-tab-pane>
+
       <el-tab-pane label="GC-MS" name="third">GCMS
         <div>
         </div>
@@ -142,13 +148,7 @@
       {{ drawExploSampleID }}
     </div> -->
 
-    <div 
-      id="highChart" 
-      v-if="drawXRDChartFlag" 
-      style="width: 100%; height: 600px; background: #EFEFEF; margin-top: 50px">
-      <!-- {{ drawExploSampleID }} -->
-      <xrd-component :drawItemID="drawItemID" ref="simpleChart"></xrd-component>
-    </div>
+    
 
     <div
       id="highChart_xrf"
