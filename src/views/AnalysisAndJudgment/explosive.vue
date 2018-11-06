@@ -177,8 +177,7 @@
     <!-- 弹出框 详细展示 -->
     <el-dialog 
       title="注意!" 
-      :visible.sync="dialogShowVisible"
-      width="30%">
+      :visible.sync="dialogShowVisible">
       <div><span>确定要删除吗?</span></div>
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" @click="">确定</el-button>

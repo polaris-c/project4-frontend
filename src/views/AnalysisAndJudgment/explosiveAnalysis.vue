@@ -15,7 +15,7 @@
       v-model="activeName" 
       type="card" 
       @tab-click="handleClick" 
-      style="margin-top:10px;">
+      style="margin-top:0px;">
       <el-tab-pane label="XRD" name="first">
         <el-row :gutter="10">
           <el-col :span="19">
@@ -61,70 +61,47 @@
       </el-tab-pane>
 
       <el-tab-pane label="XRF" name="second">XRF
-        <div>
-          <el-table
-            :data="matchXRFItems"
-            border fit highlight-current-row stripe
-            style="width: 1051px; margin-top: 10px;">
-
-            <el-table-column
-              prop="exploEvi_id"
-              label="exploEvi_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="exploSample_id"
-              label="exploSample_id"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchType"
-              label="matchType"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchModel"
-              label="matchModel"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="matchDegree"
-              label="matchDegree"
-              align="center"
-              width="150">
-            </el-table-column>
-
-            <el-table-column
-              prop="isSure"
-              label="isSure"
-              align="center"
-              width="100">
-            </el-table-column>
-
-            <el-table-column
-              align="center"
-              fixed="right"
-              label="操作"
-              width="200">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="drawChart(scope.$index, scope.row)">
-                  绘图
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+        <el-row :gutter="10">
+          <el-col :span="19">
+            <div 
+              id="highChart" 
+              v-if="true" 
+              style="width: 100%; height: 550px; background: #EFEFEF; margin-top: 0px">
+              <!-- {{ drawExploSampleID }} -->
+              <xrd-component :drawItemID="drawItemID" ref="simpleChart"></xrd-component>
+            </div>
+          </el-col>
+          
+          <el-col :span="5">
+            <el-table
+              :data="matchXRDItems"
+              border fit highlight-current-row stripe
+              style="">
+              <el-table-column
+                prop="exploSample.sname"
+                label="样本名称"
+                align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    @click="drawChart(scope.$index, scope.row)">
+                    {{scope.row.exploSample.sname}}
+                  </el-button>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="matchDegree"
+                label="匹配度"
+                align="center">
+              </el-table-column>
+              <el-table-column
+                label="状态"
+                align="center">
+                
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
       </el-tab-pane>
 
       <el-tab-pane label="GC-MS" name="third">GCMS
@@ -136,6 +113,10 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="Raman" name="">Raman
+        <div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="综合" name="">综合
         <div>
         </div>
       </el-tab-pane>
